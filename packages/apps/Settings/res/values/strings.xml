@@ -4213,6 +4213,8 @@ found in the list of installed apps.</string>
     <string name="developer_adakoda_summary">twitter : adakoda</string>
     <string name="developer_mhidaka">mhidaka</string>
     <string name="developer_mhidaka_summary">twitter : mhidaka</string>
+    <string name="developer_iqm">iqm</string>
+    <string name="developer_iqm_summary">twitter : iqm</string>
 
     <string name="theme_setting">Select Theme</string>
     <string name="theme_setting_summary">default</string>
