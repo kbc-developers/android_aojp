@@ -1003,6 +1003,34 @@
             </intent-filter>
         </activity>
 
+        <activity android:name="Settings$JapaneseCustomRomSettingsActivity"
+                android:label="@string/jcrom_settings"
+                android:clearTaskOnLaunch="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.settings.JAPANESE_CUSTOM_ROM_SETTINGS" />
+                <action android:name="com.android.settings.JAPANESE_CUSTOM_ROM_SETTINGS" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="com.android.settings.SHORTCUT" />
+            </intent-filter>
+            <meta-data android:name="com.android.settings.FRAGMENT_CLASS"
+                android:value="com.android.settings.JapaneseCustomRomSettings" />
+            <meta-data android:name="com.android.settings.TOP_LEVEL_HEADER_ID"
+                android:resource="@id/jcrom_settings" />
+        </activity>
+
+        <!-- Keep compatibility with old shortcuts. -->
+        <activity-alias android:name="JapaneseCustomRomSettings"
+                  android:clearTaskOnLaunch="true"
+                  android:exported="true"
+                  android:label="@string/jcrom_settings"
+                  android:targetActivity="Settings$JapaneseCustomRomSettingsActivity">
+            <meta-data android:name="com.android.settings.FRAGMENT_CLASS"
+                android:value="com.android.settings.JapaneseCustomRomSettings" />
+            <meta-data android:name="com.android.settings.TOP_LEVEL_HEADER_ID"
+                android:resource="@id/jcrom_settings" />
+        </activity-alias>
+
         <activity android:name="Settings$DevelopmentSettingsActivity"
                 android:label="@string/development_settings_title"
                 android:clearTaskOnLaunch="true">
