@@ -23,6 +23,7 @@
     <string name="header_category_device" msgid="5781174212691167553">"DEVICE"</string>
     <string name="header_category_personal" msgid="6225932173498802187">"PERSONAL"</string>
     <string name="header_category_system" msgid="2073558547468647128">"SYSTEM"</string>
+    <string name="header_category_jcrom" msgid="2073558547468647138">"JCROM"</string>
     <string name="turn_on_radio" msgid="8706561489788373676">"Turn on radio"</string>
     <string name="turn_off_radio" msgid="1820294552893884115">"Turn off radio"</string>
     <string name="sms_over_ims_on" msgid="5085290395865632925">"Turn on SMS over IMS"</string>
@@ -886,6 +887,7 @@
     <string name="copyright_title" msgid="865906688917260647">"Copyright"</string>
     <string name="license_title" msgid="1990487604356037871">"Licence"</string>
     <string name="terms_title" msgid="7697580845616764642">"Terms and conditions"</string>
+    <string name="jcrom_settings" msgid="7697580845616764652">"JCROM Settings"</string>
     <string name="settings_license_activity_title" msgid="7553683406244228650">"Open source licences"</string>
     <string name="settings_license_activity_unavailable" msgid="4210539215951487627">"There is a problem loading the licences."</string>
     <string name="settings_license_activity_loading" msgid="3337535809093591740">"Loading…"</string>
@@ -1469,6 +1471,14 @@
     <string name="app_process_limit_title" msgid="4280600650253107163">"Background process limit"</string>
     <string name="show_all_anrs" msgid="28462979638729082">"Show all ANRs"</string>
     <string name="show_all_anrs_summary" msgid="641908614413544127">"Show App Not Responding dialogue for background apps"</string>
+    <string name="jcrom_developers" msgid="641908614413556310">"JCROM Developers"</string>
+    <string name="jcrom_developers_summary" msgid="641908614413556320">"evelopers Info."</string>
+    <string name="developer_sola" msgid="641908614413556330">"sola"</string>
+    <string name="developer_sola_summary" msgid="641908614413556340">"twitter : androidsola"</string>
+    <string name="developer_adakoda" msgid="641908614413556350">"adakoda"</string>
+    <string name="developer_adakoda_summary" msgid="641908614413556360">"twitter : adakoda"</string>
+    <string name="developer_mhidaka" msgid="641908614413556370">"mhidaka"</string>
+    <string name="developer_mhidaka_summary" msgid="641908614413556380">"twitter : mhidaka"</string>
     <string name="data_usage_summary_title" msgid="3804110657238092929">"Data usage"</string>
     <string name="data_usage_cycle" msgid="5652529796195787949">"Data usage cycle"</string>
     <string name="data_usage_menu_roaming" msgid="8042359966835203296">"Data roaming"</string>

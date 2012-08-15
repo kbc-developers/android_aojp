@@ -1557,6 +1557,7 @@
 <!-- SYSTEM Settings -->
     <!-- Settings main menu category heading. System (Updates, data, accessibility, about phone). [CHAR LIMIT=40] -->
     <string name="header_category_system">SYSTEM</string>
+    <string name="header_category_jcrom">JCROM</string>
 
     <!-- Dock settings title, top level -->
     <string name="dock_settings">Dock</string>
@@ -2819,6 +2820,8 @@
     <!-- Note: this may be replaced by a more-specific title of the activity that will get launched --> <skip />
     <!-- About phone settings screen, setting option name to see terms and conditions -->
     <string name="terms_title">Terms and conditions</string>
+
+    <string name="jcrom_settings" >JCROM Settings</string>
 
     <!-- Title for actual Settings license activity. --> <skip />
     <!-- About phone settings, Legal information setting option name and title of dialog box holding license info -->
@@ -4201,6 +4204,15 @@ found in the list of installed apps.</string>
     <!-- UI debug setting: show all ANRs summary [CHAR LIMIT=50] -->
     <string name="show_all_anrs_summary">Show App Not Responding dialog
         for background apps</string>
+
+    <string name="jcrom_developers">JCROM Developers</string>
+    <string name="jcrom_developers_summary">Developers Info.</string>
+    <string name="developer_sola">sola</string>
+    <string name="developer_sola_summary">twitter : androidsola</string>
+    <string name="developer_adakoda">adakoda</string>
+    <string name="developer_adakoda_summary">twitter : adakoda</string>
+    <string name="developer_mhidaka">mhidaka</string>
+    <string name="developer_mhidaka_summary">twitter : mhidaka</string>
 
     <string name="theme_setting">Select Theme</string>
     <string name="theme_setting_summary">default</string>

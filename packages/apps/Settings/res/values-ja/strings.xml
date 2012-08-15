@@ -23,6 +23,7 @@
     <string name="header_category_device" msgid="5781174212691167553">"端末"</string>
     <string name="header_category_personal" msgid="6225932173498802187">"ユーザー設定"</string>
     <string name="header_category_system" msgid="2073558547468647128">"システム"</string>
+    <string name="header_category_jcrom" msgid="2073558547468647138">"JCROM"</string>
     <string name="turn_on_radio" msgid="8706561489788373676">"無線通信をON"</string>
     <string name="turn_off_radio" msgid="1820294552893884115">"無線通信をOFF"</string>
     <string name="sms_over_ims_on" msgid="5085290395865632925">"SMS over IMSをONにする"</string>
@@ -893,6 +894,7 @@
     <string name="copyright_title" msgid="865906688917260647">"著作権"</string>
     <string name="license_title" msgid="1990487604356037871">"ライセンス"</string>
     <string name="terms_title" msgid="7697580845616764642">"利用規約"</string>
+    <string name="header_category_jcrom" msgid="2073558547468647138">"JCROM"</string>
     <string name="settings_license_activity_title" msgid="7553683406244228650">"オープンソースライセンス"</string>
     <string name="settings_license_activity_unavailable" msgid="4210539215951487627">"ライセンスの読み込み中に問題が発生しました。"</string>
     <string name="settings_license_activity_loading" msgid="3337535809093591740">"読み込み中..."</string>
@@ -1478,6 +1480,14 @@
     <string name="app_process_limit_title" msgid="4280600650253107163">"バックグラウンドプロセスの上限"</string>
     <string name="show_all_anrs" msgid="28462979638729082">"すべてのANRを表示"</string>
     <string name="show_all_anrs_summary" msgid="641908614413544127">"バックグラウンドアプリが応答しない場合に通知する"</string>
+    <string name="jcrom_developers" msgid="641908614413556310">"JCROM 開発者"</string>
+    <string name="jcrom_developers_summary" msgid="641908614413556320">"JCROM 開発者情報"</string>
+    <string name="developer_sola" msgid="641908614413556330">"sola"</string>
+    <string name="developer_sola_summary" msgid="641908614413556340">"twitter : androidsola"</string>
+    <string name="developer_adakoda" msgid="641908614413556350">"adakoda"</string>
+    <string name="developer_adakoda_summary" msgid="641908614413556360">"twitter : adakoda"</string>
+    <string name="developer_mhidaka" msgid="641908614413556370">"mhidaka"</string>
+    <string name="developer_mhidaka_summary" msgid="641908614413556380">"twitter : mhidaka"</string>
     <string name="data_usage_summary_title" msgid="3804110657238092929">"データ使用"</string>
     <string name="data_usage_cycle" msgid="5652529796195787949">"データ使用サイクル"</string>
     <string name="data_usage_menu_roaming" msgid="8042359966835203296">"データローミング"</string>

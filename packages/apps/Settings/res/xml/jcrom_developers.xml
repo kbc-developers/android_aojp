@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+        android:title="@string/jcrom_developers">
+
+        <Preference
+            android:key="developer_sola"
+            android:title="@string/developer_sola"
+            android:summary="@string/developer_sola_summary"/>
+
+        <Preference
+            android:key="developer_adakoda"
+            android:title="@string/developer_adakoda"
+            android:summary="@string/developer_adakoda_summary"/>
+
+        <Preference
+            android:key="developer_mhidaka"
+            android:title="@string/developer_mhidaka"
+            android:summary="@string/developer_mhidaka_summary"/>
+
+        <Preference
+            android:key="developer_iqm"
+            android:title="@string/developer_iqm"
+            android:summary="@string/developer_iqm_summary"/>
+
+        <Preference
+            android:key="developer_Kaikias"
+            android:title="@string/developer_Kaikias"
+            android:summary="@string/developer_Kaikias_summary"/>
+
+        <Preference
+            android:key="developer_neuralassembly"
+            android:title="@string/developer_neuralassembly"
+            android:summary="@string/developer_neuralassembly_summary"/>
+
+        <Preference
+            android:key="developer_ryosms"
+            android:title="@string/developer_ryosms"
+            android:summary="@string/developer_ryosms_summary"/>
+
+        <Preference
+            android:key="developer_IoriAYANE"
+            android:title="@string/developer_IoriAYANE"
+            android:summary="@string/developer_IoriAYANE_summary"/>
+
+        <Preference
+            android:key="developer_hamatz"
+            android:title="@string/developer_hamatz"
+            android:summary="@string/developer_hamatz_summary"/>
+
+        <Preference
+            android:key="developer_tama"
+            android:title="@string/developer_tama"
+            android:summary="@string/developer_tama_summary"/>
+
+</PreferenceScreen>
