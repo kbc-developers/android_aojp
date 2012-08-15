@@ -60,6 +60,17 @@ public class WapPushManager extends Service {
     private static final boolean DEBUG_SQL = false;
     private static final boolean LOCAL_LOGV = false;
 
+    private static final String[][] mInitialDataList = {
+        {"7", "application/vnd.syncml.notification", "jp.co.nttdocomo.fota", "jp.co.nttdocomo.fota.SMSService"},
+        {"36949", "application/vnd.syncml.notification", "com.nttdocomo.android.remotelock", "com.nttdocomo.android.remotelock.SMSService"},
+        {"36956", "application/vnd.wap.emn+wbxml", "jp.co.nttdocomo.carriermail", "jp.co.nttdocomo.carriermail.SMSService"},
+        {"36959", "application/vnd.wap.slc", "com.nttdocomo.android.databackup", "com.nttdocomo.android.databackup.SMSService"},
+        {"36960", "application/vnd.wap.sic", "jp.co.nttdocomo.lcsapp", "jp.co.nttdocomo.lcsapp.SmsReceiver"},
+        {"36961", "application/vnd.wap.slc", "jp.co.nttdocomo.ichannel", "jp.co.nttdocomo.ichannel.SMSService"},
+        {"36962", "application/vnd.wap.slc", "com.nttdocomo.android.iconcier", "com.nttdocomo.android.iconcier.SMSService"},
+        {"36964", "application/vnd.wap.sic", "com.nttdocomo.android.applicationmanager", "com.nttdocomo.android.applicationmanager.DcmProvisioningService"},
+    };
+
     /**
      * Inner class that deals with application ID table
      */
@@ -141,17 +152,6 @@ public class WapPushManager extends Service {
             cur.close();
             return ret;
         }
-
-        private static final String[][] mInitialDataList = {
-            {"7", "application/vnd.syncml.notification", "jp.co.nttdocomo.fota", "jp.co.nttdocomo.fota.SMSService"},
-            {"36949", "application/vnd.syncml.notification", "com.nttdocomo.android.remotelock", "com.nttdocomo.android.remotelock.SMSService"},
-            {"36956", "application/vnd.wap.emn+wbxml", "jp.co.nttdocomo.carriermail", "jp.co.nttdocomo.carriermail.SMSService"},
-            {"36959", "application/vnd.wap.slc", "com.nttdocomo.android.databackup", "com.nttdocomo.android.databackup.SMSService"},
-            {"36960", "application/vnd.wap.sic", "jp.co.nttdocomo.lcsapp", "jp.co.nttdocomo.lcsapp.SmsReceiver"},
-            {"36961", "application/vnd.wap.slc", "jp.co.nttdocomo.ichannel", "jp.co.nttdocomo.ichannel.SMSService"},
-            {"36962", "application/vnd.wap.slc", "com.nttdocomo.android.iconcier", "com.nttdocomo.android.iconcier.SMSService"},
-            {"36964", "application/vnd.wap.sic", "com.nttdocomo.android.applicationmanager", "com.nttdocomo.android.applicationmanager.DcmProvisioningService"},
-        };
 
         protected void initializeDatabase(SQLiteDatabase db){
             for(int i = 0; i < mInitialDataList.length; i++){
