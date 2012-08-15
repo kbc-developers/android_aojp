@@ -1481,6 +1481,18 @@
     <string name="developer_mhidaka_summary" msgid="641908614413556380">"twitter : mhidaka"</string>
     <string name="developer_iqm" msgid="641908614413556390">"iqm"</string>
     <string name="developer_iqm_summary" msgid="641908614413556390">"twitter : iqm"</string>
+    <string name="developer_Kaikias" msgid="641908614413556490">"Kaikias_lys"</string>
+    <string name="developer_Kaikias_summary" msgid="641908614413556590">"twitter : Kaikias_lys"</string>
+    <string name="developer_neuralassembly" msgid="641908614413556690">"neuralassembly"</string>
+    <string name="developer_neuralassembly_summary" msgid="641908614413556790">"twitter : neuralassembly"</string>
+    <string name="developer_ryosms" msgid="641908614413556890">"ryosms"</string>
+    <string name="developer_ryosms_summary" msgid="641908614413556990">"twitter : ryosms"</string>
+    <string name="developer_IoriAYANE" msgid="641908614413556891">"IoriAYANE"</string>
+    <string name="developer_IoriAYANE_summary" msgid="641908614413556991">"twitter : IoriAYANE"</string>
+    <string name="developer_hamatz" msgid="641908614413556892">"hamatz"</string>
+    <string name="developer_hamatz_summary" msgid="641908614413556992">"twitter : hamatz"</string>
+    <string name="developer_tama" msgid="641908614413556893">"tama"</string>
+    <string name="developer_tama_summary" msgid="641908614413556993">"twitter : tamacjp"</string>
     <string name="data_usage_summary_title" msgid="3804110657238092929">"Data usage"</string>
     <string name="data_usage_cycle" msgid="5652529796195787949">"Data usage cycle"</string>
     <string name="data_usage_menu_roaming" msgid="8042359966835203296">"Data roaming"</string>

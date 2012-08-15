@@ -4175,11 +4175,26 @@ found in the list of installed apps.</string>
     <string name="force_tablet_ui">Force Tablet UI</string>
     <string name="force_tablet_ui_summary">Use Tablet UI</string>
 
+    <string name="actionbar_bottom">Bottom ActionBar</string>
+    <string name="actionbar_bottom_summary">ActionBar put on bottom</string>
+
     <string name="force_my_font">Change My Font</string>
     <string name="force_my_font_summary">Use My Font</string>
 
     <string name="force_my_hobby">Change My UI</string>
     <string name="force_my_hobby_summary">Use My UI</string>
+
+    <!-- Fix Wallpaper -->
+    <string name="force_fixed_wallpaper">Fix Wallpaper</string>
+    <string name="force_fixed_wallpaper_summary">Use Fixed Wallpaper(1280x720)</string>
+    
+    <!-- Change ANDROID_ID -->
+    <string name="force_my_android_id">ANDROID_ID</string>
+    
+    <!-- Selectable number of homescreen -->
+    <string name="number_of_homescreen">Number of Homescreen</string>
+    <string name="number_of_homescreen_summary">Change number of Homescreen</string>
+    <string name="number_of_homescreen_title">Select Number of Homescreen</string>
 
     <!-- UI debug setting: scaling factor for window animations [CHAR LIMIT=25] -->
     <string name="window_animation_scale_title">Window animation scale</string>
@@ -4215,6 +4230,18 @@ found in the list of installed apps.</string>
     <string name="developer_mhidaka_summary">twitter : mhidaka</string>
     <string name="developer_iqm">iqm</string>
     <string name="developer_iqm_summary">twitter : iqm</string>
+    <string name="developer_Kaikias">Kaikias_lys</string>
+    <string name="developer_Kaikias_summary">twitter : Kaikias_lys</string>
+    <string name="developer_neuralassembly">neuralassembly</string>
+    <string name="developer_neuralassembly_summary">twitter : neuralassembly</string>
+    <string name="developer_ryosms">ryosms</string>
+    <string name="developer_ryosms_summary">twitter : ryosms</string>
+    <string name="developer_IoriAYANE">IoriAYANE</string>
+    <string name="developer_IoriAYANE_summary">twitter : IoriAYANE</string>
+    <string name="developer_hamatz">hamatz</string>
+    <string name="developer_hamatz_summary">twitter : hamatz</string>
+    <string name="developer_tama">tama</string>
+    <string name="developer_tama_summary">twitter : tamacjp</string>
 
     <string name="theme_setting">Select Theme</string>
     <string name="theme_setting_summary">default</string>

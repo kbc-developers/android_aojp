@@ -1466,12 +1466,21 @@
     <string name="force_hw_ui_summary" msgid="8642000962902609976">"アプリで2Dハードウェアアクセラレーションを使用"</string>
     <string name="force_tablet_ui" msgid="6426383462520888742">"Tablet UI を使用"</string>
     <string name="force_tablet_ui_summary" msgid="8642000962902609986">"強制的に Tablet UI を使用する"</string>
+    <string name="actionbar_bottom">ActionBar を下に</string>
+    <string name="actionbar_bottom_summary">ActionBar を下に配置する</string>
     <string name="force_my_font" msgid="7426383462520888742">"フォントを変更する"</string>
     <string name="force_my_font_summary" msgid="9642000962902609986">"強制的にフォントを変更する"</string>
     <string name="force_my_hobby" msgid="7426383462520888752">"趣味に走る"</string>
     <string name="force_my_hobby_summary" msgid="9642000962902609996">"テーマ選択を有効にします"</string>
     <string name="theme_setting" msgid="7426383462520988752">"テーマ選択"</string>
     <string name="theme_setting_summary" msgid="9642000962902709996">"何も選択されてません"</string>
+    <!-- Fix Wallpaper -->
+    <string name="force_fixed_wallpaper" msgid="9245217863256487532">"壁紙固定モード"</string>
+    <string name="force_fixed_wallpaper_summary" msgid="5441287412586128742">"ホームスクリーンをスクロールしても壁紙が連動しないようにします"</string>
+    <!-- Selectable number of homescreen -->
+    <string name="number_of_homescreen" msgid="4682013568742146245">ホームスクリーンの枚数</string>
+    <string name="number_of_homescreen_summary" msgid="4682013568742146246">ホームスクリーンの枚数を変更する</string>
+    <string name="number_of_homescreen_title" msgid="4682013568742146247">ホームスクリーン枚数選択</string>
     <string name="window_animation_scale_title" msgid="6162587588166114700">"ウィンドウアニメスケール"</string>
     <string name="transition_animation_scale_title" msgid="387527540523595875">"トランジションアニメスケール"</string>
     <string name="debug_applications_category" msgid="4206913653849771549">"アプリ"</string>
@@ -1490,6 +1499,18 @@
     <string name="developer_mhidaka_summary" msgid="641908614413556380">"twitter : mhidaka"</string>
     <string name="developer_iqm" msgid="641908614413556390">"iqm"</string>
     <string name="developer_iqm_summary" msgid="641908614413556390">"twitter : iqm"</string>
+    <string name="developer_Kaikias" msgid="641908614413556490">"Kaikias_lys"</string>
+    <string name="developer_Kaikias_summary" msgid="641908614413556590">"twitter : Kaikias_lys"</string>
+    <string name="developer_neuralassembly" msgid="641908614413556690">"neuralassembly"</string>
+    <string name="developer_neuralassembly_summary" msgid="641908614413556790">"twitter : neuralassembly"</string>
+    <string name="developer_ryosms" msgid="641908614413556890">"ryosms"</string>
+    <string name="developer_ryosms_summary" msgid="641908614413556990">"twitter : ryosms"</string>
+    <string name="developer_IoriAYANE" msgid="641908614413556891">"IoriAYANE"</string>
+    <string name="developer_IoriAYANE_summary" msgid="641908614413556991">"twitter : IoriAYANE"</string>
+    <string name="developer_hamatz" msgid="641908614413556892">"hamatz"</string>
+    <string name="developer_hamatz_summary" msgid="641908614413556992">"twitter : hamatz"</string>
+    <string name="developer_tama" msgid="641908614413556893">"tama"</string>
+    <string name="developer_tama_summary" msgid="641908614413556993">"twitter : tamacjp"</string>
     <string name="data_usage_summary_title" msgid="3804110657238092929">"データ使用"</string>
     <string name="data_usage_cycle" msgid="5652529796195787949">"データ使用サイクル"</string>
     <string name="data_usage_menu_roaming" msgid="8042359966835203296">"データローミング"</string>
