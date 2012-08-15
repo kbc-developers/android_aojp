@@ -41,12 +41,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.LinearLayout;
-import android.os.SystemProperties;
-
-import java.io.File;
-import android.graphics.drawable.Drawable;
-import android.widget.ImageView;
-import android.os.Environment;
 
 import com.android.internal.statusbar.IStatusBarService;
 import com.android.systemui.R;
@@ -313,123 +307,6 @@ public class NavigationBarView extends LinearLayout {
             group.setMotionEventSplittingEnabled(false);
         }
         mCurrentView = mRotatedViews[Surface.ROTATION_0];
-
-        String forceHobby = SystemProperties.get("persist.sys.force.hobby");
-        if (forceHobby.equals("true")) {
-            {
-                {
-                    String MY_IMAGE_FILE = "ic_sysbar_recent.png";
-                    StringBuilder builder = new StringBuilder();
-                    builder.append(Environment.getExternalStorageDirectory().toString() + "/mytheme/" + SystemProperties.get("persist.sys.theme") + "/navikey/");
-                    builder.append(File.separator);
-                    builder.append(MY_IMAGE_FILE);
-                    String filePath = builder.toString();
-                    Drawable drawable = Drawable.createFromPath(filePath);
-                    if( null != drawable ) {
-                        ImageView imageView = (ImageView)(mRotatedViews[Surface.ROTATION_0].findViewById(R.id.recent_apps));
-                        imageView.setImageDrawable(drawable);
-                    }
-                }
-                {
-                    String MY_IMAGE_FILE = "ic_sysbar_recent_land.png";
-                    StringBuilder builder = new StringBuilder();
-                    builder.append(Environment.getExternalStorageDirectory().toString() + "/mytheme/" + SystemProperties.get("persist.sys.theme") + "/navikey/");
-                    builder.append(File.separator);
-                    builder.append(MY_IMAGE_FILE);
-                    String filePath = builder.toString();
-                    Drawable drawable = Drawable.createFromPath(filePath);
-                    if( null != drawable ) {
-                        ImageView imageView_land = (ImageView)(mRotatedViews[Surface.ROTATION_90].findViewById(R.id.recent_apps));
-                        imageView_land.setImageDrawable(drawable);
-                    }
-                }
-            }
-            {
-                {
-                    String MY_IMAGE_FILE = "ic_sysbar_menu.png";
-                    StringBuilder builder = new StringBuilder();
-                    builder.append(Environment.getExternalStorageDirectory().toString() + "/mytheme/" + SystemProperties.get("persist.sys.theme") + "/navikey/");
-                    builder.append(File.separator);
-                    builder.append(MY_IMAGE_FILE);
-                    String filePath = builder.toString();
-                    Drawable drawable = Drawable.createFromPath(filePath);
-                    if( null != drawable ) {
-                        ImageView imageView = (ImageView)(mRotatedViews[Surface.ROTATION_0].findViewById(R.id.mymenu));
-                        imageView.setImageDrawable(drawable);
-                    }
-                }
-                {
-                    String MY_IMAGE_FILE = "ic_sysbar_menu_land.png";
-                    StringBuilder builder = new StringBuilder();
-                    builder.append(Environment.getExternalStorageDirectory().toString() + "/mytheme/" + SystemProperties.get("persist.sys.theme") + "/" + SystemProperties.get("persist.sys.theme") + "/navikey/");
-                    builder.append(File.separator);
-                    builder.append(MY_IMAGE_FILE);
-                    String filePath = builder.toString();
-                    Drawable drawable = Drawable.createFromPath(filePath);
-                    if( null != drawable ) {
-                        ImageView imageView_land = (ImageView)(mRotatedViews[Surface.ROTATION_90].findViewById(R.id.mymenu));
-                        imageView_land.setImageDrawable(drawable);
-                    }
-                }
-            }
-            {
-                {
-                    String MY_IMAGE_FILE = "ic_sysbar_back.png";
-                    StringBuilder builder = new StringBuilder();
-                    builder.append(Environment.getExternalStorageDirectory().toString() + "/mytheme/" + SystemProperties.get("persist.sys.theme") + "/navikey/");
-                    builder.append(File.separator);
-                    builder.append(MY_IMAGE_FILE);
-                    String filePath = builder.toString();
-                    Drawable drawable = Drawable.createFromPath(filePath);
-                    if( null != drawable ) {
-                        ImageView imageView = (ImageView)(mRotatedViews[Surface.ROTATION_0].findViewById(R.id.back));
-                        imageView.setImageDrawable(drawable);
-                    }
-                }
-                {
-                    String MY_IMAGE_FILE = "ic_sysbar_back_land.png";
-                    StringBuilder builder = new StringBuilder();
-                    builder.append(Environment.getExternalStorageDirectory().toString() + "/mytheme/" + SystemProperties.get("persist.sys.theme") + "/navikey/");
-                    builder.append(File.separator);
-                    builder.append(MY_IMAGE_FILE);
-                    String filePath = builder.toString();
-                    Drawable drawable = Drawable.createFromPath(filePath);
-                    if( null != drawable ) {
-                        ImageView imageView_land = (ImageView)(mRotatedViews[Surface.ROTATION_90].findViewById(R.id.back));
-                        imageView_land.setImageDrawable(drawable);
-                    }
-                }
-            }
-            {
-                {
-                    String MY_IMAGE_FILE = "ic_sysbar_home.png";
-                    StringBuilder builder = new StringBuilder();
-                    builder.append(Environment.getExternalStorageDirectory().toString() + "/mytheme/" + SystemProperties.get("persist.sys.theme") + "/navikey/");
-                    builder.append(File.separator);
-                    builder.append(MY_IMAGE_FILE);
-                    String filePath = builder.toString();
-                    Drawable drawable = Drawable.createFromPath(filePath);
-                    if( null != drawable ) {
-                        ImageView imageView = (ImageView)(mRotatedViews[Surface.ROTATION_0].findViewById(R.id.home));
-                        imageView.setImageDrawable(drawable);
-                    }
-                }
-                {
-                    String MY_IMAGE_FILE = "ic_sysbar_home_land.png";
-                    StringBuilder builder = new StringBuilder();
-                    builder.append(Environment.getExternalStorageDirectory().toString() + "/mytheme/" + SystemProperties.get("persist.sys.theme") + "/navikey/");
-                    builder.append(File.separator);
-                    builder.append(MY_IMAGE_FILE);
-                    String filePath = builder.toString();
-                    Drawable drawable = Drawable.createFromPath(filePath);
-                    if( null != drawable ) {
-                        ImageView imageView_land = (ImageView)(mRotatedViews[Surface.ROTATION_90].findViewById(R.id.home));
-                        imageView_land.setImageDrawable(drawable);
-                    }
-                }
-            }
-        }
-
     }
 
     public void reorient() {

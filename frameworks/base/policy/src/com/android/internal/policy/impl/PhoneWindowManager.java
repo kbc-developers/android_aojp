@@ -1110,7 +1110,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         String forceTablet = SystemProperties.get("persist.sys.force.tablet");
         if (! "".equals(forceTablet)) {
             if      (forceTablet.equals("true")) mHasNavigationBar = false;
-            else if (forceTablet.equals("false")) mHasNavigationBar = true;
         }
 
         mNavigationBarHeight = mHasNavigationBar
