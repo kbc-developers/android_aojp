@@ -67,6 +67,7 @@ import android.view.WindowManager;
 import android.view.WindowManagerImpl;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RemoteViews;
@@ -434,6 +435,22 @@ public class PhoneStatusBar extends StatusBar {
         tickerView.mTicker = mTicker;
 
         mTrackingView = (TrackingView)View.inflate(context, R.layout.status_bar_tracking, null);
+
+        String forceHobby = SystemProperties.get("persist.sys.force.hobby");
+        if (forceHobby.equals("true")) {
+            String IMAGE_FILENAME = "notification_tracking_bg.png";
+            FrameLayout f = (FrameLayout) mTrackingView.findViewById(R.id.notification_tracking_bg);
+            StringBuilder builder = new StringBuilder();
+            builder.append(Environment.getExternalStorageDirectory().toString() + "/mytheme/notification/");
+            builder.append(File.separator);
+            builder.append(IMAGE_FILENAME);
+            String filePath = builder.toString();
+            Drawable drawable = Drawable.createFromPath(filePath);
+            if (drawable != null) {
+                f.setBackgroundDrawable(drawable);
+            }
+        }
+
         mTrackingView.mService = this;
         mCloseView = (CloseDragHandle)mTrackingView.findViewById(R.id.close);
         mCloseView.mService = this;
@@ -470,7 +487,6 @@ public class PhoneStatusBar extends StatusBar {
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         context.registerReceiver(mBroadcastReceiver, filter);
 
-        String forceHobby = SystemProperties.get("persist.sys.force.hobby");
         if (forceHobby.equals("true")) {
             String MY_NOTIFICATION_FORMAT = "notification_item_background_%02d_%s.png";
             String MY_NOTIFICATION_FORMAT_SUFFIX_NORMAL = "normal";
