@@ -4202,6 +4202,9 @@ found in the list of installed apps.</string>
     <string name="show_all_anrs_summary">Show App Not Responding dialog
         for background apps</string>
 
+    <string name="theme_setting">Select Theme</string>
+    <string name="theme_setting_summary">default</string>
+
     <!-- UI debug setting: kill app long-press back [CHAR LIMIT=25] -->
     <string name="kill_app_longpress_back">Kill app back button</string>
     <!-- UI debug settting: kill app long-press back [CHAR LIMIT=50] -->

@@ -16,6 +16,7 @@
 
 package com.android.settings;
 
+import com.android.settings.FileListDialog;
 import android.app.ActivityManagerNative;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -44,13 +45,24 @@ import android.preference.Preference.OnPreferenceChangeListener;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.IWindowManager;
+import java.io.File;
+import android.widget.Toast;
+import android.preference.DialogPreference;
+import android.content.SharedPreferences;
+import android.util.AttributeSet;
+import android.view.View;
+import android.util.Log;
+import android.os.Environment;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import java.io.IOException;
 
 /*
  * Displays preferences for application developers.
  */
 public class DevelopmentSettings extends PreferenceFragment
         implements DialogInterface.OnClickListener, DialogInterface.OnDismissListener,
-                OnPreferenceChangeListener {
+                OnPreferenceChangeListener, FileListDialog.onFileListDialogListener {
 
     private static final String ENABLE_ADB = "enable_adb";
     private static final String ADB_TCPIP  = "adb_over_network";
@@ -65,6 +77,7 @@ public class DevelopmentSettings extends PreferenceFragment
     private static final String TABLET_UI_PROPERTY = "persist.sys.force.tablet";
     private static final String MY_FONT_PROPERTY = "persist.sys.force.myfont";
     private static final String MY_HOBBY_PROPERTY = "persist.sys.force.hobby";
+    private static final String MY_THEME_PROPERTY = "persist.sys.theme";
 
     private static final String STRICT_MODE_KEY = "strict_mode";
     private static final String POINTER_LOCATION_KEY = "pointer_location";
@@ -86,6 +99,7 @@ public class DevelopmentSettings extends PreferenceFragment
     private static final String APP_PROCESS_LIMIT_KEY = "app_process_limit";
 
     private static final String SHOW_ALL_ANRS_KEY = "show_all_anrs";
+    private static final String THEME_KEY = "theme_setting";
 
     private static final String KILL_APP_LONGPRESS_BACK = "kill_app_longpress_back";
 
@@ -106,7 +120,7 @@ public class DevelopmentSettings extends PreferenceFragment
     private CheckBoxPreference mForceHardwareUi;
     private CheckBoxPreference mForceTabletUi;
     private CheckBoxPreference mForceMyFont;
-    private CheckBoxPreference mForceMyHobby;
+//    private CheckBoxPreference mForceMyHobby;
     private ListPreference mWindowAnimationScale;
     private ListPreference mTransitionAnimationScale;
 
@@ -114,6 +128,7 @@ public class DevelopmentSettings extends PreferenceFragment
     private ListPreference mAppProcessLimit;
 
     private CheckBoxPreference mShowAllANRs;
+    private PreferenceScreen mTheme;
     private CheckBoxPreference mKillAppLongpressBack;
 
     private ListPreference mRootAccess;
@@ -164,6 +179,7 @@ public class DevelopmentSettings extends PreferenceFragment
 
         mShowAllANRs = (CheckBoxPreference) findPreference(
                 SHOW_ALL_ANRS_KEY);
+        mTheme = (PreferenceScreen) findPreference(THEME_KEY);
 
         mKillAppLongpressBack = (CheckBoxPreference) findPreference(
                 KILL_APP_LONGPRESS_BACK);
@@ -176,6 +192,10 @@ public class DevelopmentSettings extends PreferenceFragment
         final VerifierDeviceIdentity verifierIndentity = pm.getVerifierDeviceIdentity();
         if (verifierIndentity != null) {
             verifierDeviceIdentifier.setSummary(verifierIndentity.toString());
+        }
+
+        if ((SystemProperties.get(MY_THEME_PROPERTY) != null) && (SystemProperties.get(MY_THEME_PROPERTY) != "")) {
+            mTheme.setSummary(SystemProperties.get(MY_THEME_PROPERTY));
         }
 
         removeRootOptions();
@@ -398,6 +418,14 @@ public class DevelopmentSettings extends PreferenceFragment
     
     private void writeMyHobbyOptions() {
         SystemProperties.set(MY_HOBBY_PROPERTY, mForceMyHobby.isChecked() ? "true" : "false");
+        if (!(mForceMyHobby.isChecked())) {
+            try {
+                getActivity().clearWallpaper();
+            } catch (IOException e) {
+            }
+            SystemProperties.set(MY_THEME_PROPERTY, "");
+            mTheme.setSummary("");
+        }
     }
 
     private void updateCpuUsageOptions() {
@@ -513,6 +541,28 @@ public class DevelopmentSettings extends PreferenceFragment
     }
 
     @Override
+    public void onClickFileList(File file) { 
+        if(file != null) {
+            SystemProperties.set(MY_THEME_PROPERTY, file.getName());
+            mTheme.setSummary(file.getName());
+            Bitmap bitmapWallpaper;
+            String MY_FRAME_FILE = "home_wallpaper.png";
+            StringBuilder builder = new StringBuilder();
+            builder.append(Environment.getExternalStorageDirectory().toString() + "/mytheme/" + SystemProperties.get("persist.sys.theme") + "/wallpaper/");
+            builder.append(File.separator);
+            builder.append(MY_FRAME_FILE);
+            String filePath = builder.toString();
+            bitmapWallpaper = BitmapFactory.decodeFile(filePath);
+            if (null != bitmapWallpaper) {
+                try {
+                    getActivity().setWallpaper(bitmapWallpaper);
+                } catch (IOException e) {
+                }
+            }
+        }
+    }
+
+    @Override
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
 
         if (Utils.isMonkeyRunning()) {
@@ -586,6 +636,12 @@ public class DevelopmentSettings extends PreferenceFragment
             writeMyFontOptions();
         } else if (preference == mForceMyHobby) {
             writeMyHobbyOptions();
+        } else if (preference == mTheme) {
+            if(mForceMyHobby.isChecked()) {
+                FileListDialog dlg = new FileListDialog(getActivity());
+                dlg.setOnFileListDialogListener(this);
+                dlg.show( "/sdcard/mytheme/", "select theme");
+            }
         }
 
         return false;

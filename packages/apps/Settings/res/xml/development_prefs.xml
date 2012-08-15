@@ -145,6 +145,11 @@
             android:title="@string/force_my_hobby"
             android:summary="@string/force_my_hobby_summary"/>
 
+        <PreferenceScreen
+            android:key="theme_setting"
+            android:title="@string/theme_setting"
+            android:summary="@string/theme_setting_summary"/>
+
     </PreferenceCategory>
 
     <PreferenceCategory

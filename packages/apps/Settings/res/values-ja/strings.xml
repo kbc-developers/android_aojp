@@ -1467,7 +1467,9 @@
     <string name="force_my_font" msgid="7426383462520888742">"フォントを変更する"</string>
     <string name="force_my_font_summary" msgid="9642000962902609986">"強制的にフォントを変更する"</string>
     <string name="force_my_hobby" msgid="7426383462520888752">"趣味に走る"</string>
-    <string name="force_my_hobby_summary" msgid="9642000962902609996">"何か問題でも？"</string>
+    <string name="force_my_hobby_summary" msgid="9642000962902609996">"テーマ選択を有効にします"</string>
+    <string name="theme_setting" msgid="7426383462520988752">"テーマ選択"</string>
+    <string name="theme_setting_summary" msgid="9642000962902709996">"何も選択されてません"</string>
     <string name="window_animation_scale_title" msgid="6162587588166114700">"ウィンドウアニメスケール"</string>
     <string name="transition_animation_scale_title" msgid="387527540523595875">"トランジションアニメスケール"</string>
     <string name="debug_applications_category" msgid="4206913653849771549">"アプリ"</string>
