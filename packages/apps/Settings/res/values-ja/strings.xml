@@ -1466,6 +1466,8 @@
     <string name="force_tablet_ui_summary" msgid="8642000962902609986">"強制的に Tablet UI を使用する"</string>
     <string name="force_my_font" msgid="7426383462520888742">"フォントを変更する"</string>
     <string name="force_my_font_summary" msgid="9642000962902609986">"強制的にフォントを変更する"</string>
+    <string name="force_my_hobby" msgid="7426383462520888752">"趣味に走る"</string>
+    <string name="force_my_hobby_summary" msgid="9642000962902609996">"何か問題でも？"</string>
     <string name="window_animation_scale_title" msgid="6162587588166114700">"ウィンドウアニメスケール"</string>
     <string name="transition_animation_scale_title" msgid="387527540523595875">"トランジションアニメスケール"</string>
     <string name="debug_applications_category" msgid="4206913653849771549">"アプリ"</string>

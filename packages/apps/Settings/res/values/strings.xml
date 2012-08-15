@@ -4175,6 +4175,8 @@ found in the list of installed apps.</string>
     <string name="force_my_font">Change My Font</string>
     <string name="force_my_font_summary">Use My Font</string>
 
+    <string name="force_my_hobby">Change My UI</string>
+    <string name="force_my_hobby_summary">Use My UI</string>
 
     <!-- UI debug setting: scaling factor for window animations [CHAR LIMIT=25] -->
     <string name="window_animation_scale_title">Window animation scale</string>
