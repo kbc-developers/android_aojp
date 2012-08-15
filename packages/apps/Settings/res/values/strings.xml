@@ -4169,10 +4169,12 @@ found in the list of installed apps.</string>
     <!-- UI debug setting: force hardware acceleration summary [CHAR LIMIT=50] -->
     <string name="force_hw_ui_summary">Use 2D hardware acceleration in applications</string>
 
-    <!-- UI debug setting: force hardware acceleration to render apps [CHAR LIMIT=25] -->
     <string name="force_tablet_ui">Force Tablet UI</string>
-    <!-- UI debug setting: force hardware acceleration summary [CHAR LIMIT=50] -->
     <string name="force_tablet_ui_summary">Use Tablet UI</string>
+
+    <string name="force_my_font">Change My Font</string>
+    <string name="force_my_font_summary">Use My Font</string>
+
 
     <!-- UI debug setting: scaling factor for window animations [CHAR LIMIT=25] -->
     <string name="window_animation_scale_title">Window animation scale</string>

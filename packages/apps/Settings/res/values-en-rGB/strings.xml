@@ -1457,6 +1457,8 @@
     <string name="force_hw_ui_summary" msgid="8642000962902609976">"Use 2D hardware acceleration in applications"</string>
     <string name="force_tablet_ui" msgid="6426383462520888742">"Force Tablet UI"</string>
     <string name="force_tablet_ui_summary" msgid="8642000962902609986">"Use Tablet UI"</string>
+    <string name="force_my_font" msgid="7426383462520888742">"Change Font"</string>
+    <string name="force_my_font_summary" msgid="9642000962902609986">"Use My Font"</string>
     <string name="window_animation_scale_title" msgid="6162587588166114700">"Window animation scale"</string>
     <string name="transition_animation_scale_title" msgid="387527540523595875">"Transition animation scale"</string>
     <string name="debug_applications_category" msgid="4206913653849771549">"Apps"</string>

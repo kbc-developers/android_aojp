@@ -135,6 +135,11 @@
             android:title="@string/force_tablet_ui"
             android:summary="@string/force_tablet_ui_summary"/>
 
+        <CheckBoxPreference
+            android:key="force_my_font"
+            android:title="@string/force_my_font"
+            android:summary="@string/force_my_font_summary"/>
+
     </PreferenceCategory>
 
     <PreferenceCategory

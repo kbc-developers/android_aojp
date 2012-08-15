@@ -63,6 +63,7 @@ public class DevelopmentSettings extends PreferenceFragment
     private static final String LOCAL_BACKUP_PASSWORD = "local_backup_password";
     private static final String HARDWARE_UI_PROPERTY = "persist.sys.ui.hw";
     private static final String TABLET_UI_PROPERTY = "persist.sys.force.tablet";
+    private static final String MY_FONT_PROPERTY = "persist.sys.force.myfont";
 
     private static final String STRICT_MODE_KEY = "strict_mode";
     private static final String POINTER_LOCATION_KEY = "pointer_location";
@@ -71,6 +72,7 @@ public class DevelopmentSettings extends PreferenceFragment
     private static final String SHOW_CPU_USAGE_KEY = "show_cpu_usage";
     private static final String FORCE_HARDWARE_UI_KEY = "force_hw_ui";
     private static final String FORCE_TABLET_UI_KEY = "force_tablet_ui";
+    private static final String FORCE_MY_FONT_KEY = "force_my_font";
     private static final String WINDOW_ANIMATION_SCALE_KEY = "window_animation_scale";
     private static final String TRANSITION_ANIMATION_SCALE_KEY = "transition_animation_scale";
 
@@ -101,6 +103,7 @@ public class DevelopmentSettings extends PreferenceFragment
     private CheckBoxPreference mShowCpuUsage;
     private CheckBoxPreference mForceHardwareUi;
     private CheckBoxPreference mForceTabletUi;
+    private CheckBoxPreference mForceMyFont;
     private ListPreference mWindowAnimationScale;
     private ListPreference mTransitionAnimationScale;
 
@@ -144,6 +147,7 @@ public class DevelopmentSettings extends PreferenceFragment
         mShowCpuUsage = (CheckBoxPreference) findPreference(SHOW_CPU_USAGE_KEY);
         mForceHardwareUi = (CheckBoxPreference) findPreference(FORCE_HARDWARE_UI_KEY);
         mForceTabletUi = (CheckBoxPreference) findPreference(FORCE_TABLET_UI_KEY);
+        mForceMyFont = (CheckBoxPreference) findPreference(FORCE_MY_FONT_KEY);
         mWindowAnimationScale = (ListPreference) findPreference(WINDOW_ANIMATION_SCALE_KEY);
         mWindowAnimationScale.setOnPreferenceChangeListener(this);
         mTransitionAnimationScale = (ListPreference) findPreference(TRANSITION_ANIMATION_SCALE_KEY);
@@ -376,6 +380,14 @@ public class DevelopmentSettings extends PreferenceFragment
         SystemProperties.set(TABLET_UI_PROPERTY, mForceTabletUi.isChecked() ? "true" : "false");
     }
 
+    private void updateMyFontOptions() {
+        mForceMyFont.setChecked(SystemProperties.getBoolean(MY_FONT_PROPERTY, false));
+    }
+    
+    private void writeMyFontOptions() {
+        SystemProperties.set(MY_FONT_PROPERTY, mForceMyFont.isChecked() ? "true" : "false");
+    }
+
     private void updateCpuUsageOptions() {
         mShowCpuUsage.setChecked(Settings.System.getInt(getActivity().getContentResolver(),
                 Settings.System.SHOW_PROCESSES, 0) != 0);
@@ -558,6 +570,8 @@ public class DevelopmentSettings extends PreferenceFragment
             writeHardwareUiOptions();
         } else if (preference == mForceTabletUi) {
             writeTabletUiOptions();
+        } else if (preference == mForceMyFont) {
+            writeMyFontOptions();
         }
 
         return false;
