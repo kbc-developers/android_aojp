@@ -82,6 +82,14 @@ int main(int argc, char** argv)
         LOGI("bootsound_volume=%f", bootsoundVolume);
     }
 
+    char themeAnimFile[PROPERTY_VALUE_MAX] = { 0 };
+    property_get("persist.sys.force.hobby", value, "false");
+    if (strcmp(value, "true") == 0) {
+        if (property_get("persist.sys.theme", value, NULL) > 0) {
+            sprintf(themeAnimFile, "/sdcard/mytheme/%s/bootanime/bootanimation.zip", value);
+        }
+    }
+
     if (!noBootAnimation) {
 
         seteuid(1003);
@@ -101,7 +109,7 @@ int main(int argc, char** argv)
         // create the boot animation object
         sp<BootAnimation> boot = new BootAnimation(
                                          noBootAnimationWait ? true : false,
-                                         argc > 1 ? argv[1] : NULL,
+                                         themeAnimFile[0] != 0 ? themeAnimFile : argc > 1 ? argv[1] : NULL,
                                          noBootSound ? NULL : (argc > 2 ? argv[2] : bootsoundFile),
                                          noBootMovie ? NULL : (argc > 3 ? argv[3] : bootmovieFile),
                                          bootsoundVolume);

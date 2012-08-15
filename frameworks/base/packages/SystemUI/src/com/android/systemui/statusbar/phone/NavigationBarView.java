@@ -320,7 +320,7 @@ public class NavigationBarView extends LinearLayout {
                 {
                     String MY_IMAGE_FILE = "ic_sysbar_recent.png";
                     StringBuilder builder = new StringBuilder();
-                    builder.append(Environment.getExternalStorageDirectory().toString() + "/mytheme/navikey/");
+                    builder.append(Environment.getExternalStorageDirectory().toString() + "/mytheme/" + SystemProperties.get("persist.sys.theme") + "/navikey/");
                     builder.append(File.separator);
                     builder.append(MY_IMAGE_FILE);
                     String filePath = builder.toString();
@@ -333,7 +333,7 @@ public class NavigationBarView extends LinearLayout {
                 {
                     String MY_IMAGE_FILE = "ic_sysbar_recent_land.png";
                     StringBuilder builder = new StringBuilder();
-                    builder.append(Environment.getExternalStorageDirectory().toString() + "/mytheme/navikey/");
+                    builder.append(Environment.getExternalStorageDirectory().toString() + "/mytheme/" + SystemProperties.get("persist.sys.theme") + "/navikey/");
                     builder.append(File.separator);
                     builder.append(MY_IMAGE_FILE);
                     String filePath = builder.toString();
@@ -348,7 +348,7 @@ public class NavigationBarView extends LinearLayout {
                 {
                     String MY_IMAGE_FILE = "ic_sysbar_menu.png";
                     StringBuilder builder = new StringBuilder();
-                    builder.append(Environment.getExternalStorageDirectory().toString() + "/mytheme/navikey/");
+                    builder.append(Environment.getExternalStorageDirectory().toString() + "/mytheme/" + SystemProperties.get("persist.sys.theme") + "/navikey/");
                     builder.append(File.separator);
                     builder.append(MY_IMAGE_FILE);
                     String filePath = builder.toString();
@@ -361,7 +361,7 @@ public class NavigationBarView extends LinearLayout {
                 {
                     String MY_IMAGE_FILE = "ic_sysbar_menu_land.png";
                     StringBuilder builder = new StringBuilder();
-                    builder.append(Environment.getExternalStorageDirectory().toString() + "/mytheme/navikey/");
+                    builder.append(Environment.getExternalStorageDirectory().toString() + "/mytheme/" + SystemProperties.get("persist.sys.theme") + "/" + SystemProperties.get("persist.sys.theme") + "/navikey/");
                     builder.append(File.separator);
                     builder.append(MY_IMAGE_FILE);
                     String filePath = builder.toString();
@@ -376,7 +376,7 @@ public class NavigationBarView extends LinearLayout {
                 {
                     String MY_IMAGE_FILE = "ic_sysbar_back.png";
                     StringBuilder builder = new StringBuilder();
-                    builder.append(Environment.getExternalStorageDirectory().toString() + "/mytheme/navikey/");
+                    builder.append(Environment.getExternalStorageDirectory().toString() + "/mytheme/" + SystemProperties.get("persist.sys.theme") + "/navikey/");
                     builder.append(File.separator);
                     builder.append(MY_IMAGE_FILE);
                     String filePath = builder.toString();
@@ -389,7 +389,7 @@ public class NavigationBarView extends LinearLayout {
                 {
                     String MY_IMAGE_FILE = "ic_sysbar_back_land.png";
                     StringBuilder builder = new StringBuilder();
-                    builder.append(Environment.getExternalStorageDirectory().toString() + "/mytheme/navikey/");
+                    builder.append(Environment.getExternalStorageDirectory().toString() + "/mytheme/" + SystemProperties.get("persist.sys.theme") + "/navikey/");
                     builder.append(File.separator);
                     builder.append(MY_IMAGE_FILE);
                     String filePath = builder.toString();
@@ -404,7 +404,7 @@ public class NavigationBarView extends LinearLayout {
                 {
                     String MY_IMAGE_FILE = "ic_sysbar_home.png";
                     StringBuilder builder = new StringBuilder();
-                    builder.append(Environment.getExternalStorageDirectory().toString() + "/mytheme/navikey/");
+                    builder.append(Environment.getExternalStorageDirectory().toString() + "/mytheme/" + SystemProperties.get("persist.sys.theme") + "/navikey/");
                     builder.append(File.separator);
                     builder.append(MY_IMAGE_FILE);
                     String filePath = builder.toString();
@@ -417,7 +417,7 @@ public class NavigationBarView extends LinearLayout {
                 {
                     String MY_IMAGE_FILE = "ic_sysbar_home_land.png";
                     StringBuilder builder = new StringBuilder();
-                    builder.append(Environment.getExternalStorageDirectory().toString() + "/mytheme/navikey/");
+                    builder.append(Environment.getExternalStorageDirectory().toString() + "/mytheme/" + SystemProperties.get("persist.sys.theme") + "/navikey/");
                     builder.append(File.separator);
                     builder.append(MY_IMAGE_FILE);
                     String filePath = builder.toString();

@@ -415,14 +415,16 @@ public class RecentsPanelView extends RelativeLayout implements OnItemClickListe
             if ( true == mMyFrame ) {
                 String MY_FRAME_FILE = "my_frame.png";
                 StringBuilder builder = new StringBuilder();
-                builder.append(Environment.getExternalStorageDirectory().toString() + "/mytheme/frame/");
+                builder.append(Environment.getExternalStorageDirectory().toString() + "/mytheme/" + SystemProperties.get("persist.sys.theme") + "/frame/");
                 builder.append(File.separator);
                 builder.append(MY_FRAME_FILE);
                 String filePath = builder.toString();
                 Drawable drawable = Drawable.createFromPath(filePath);
-                Bitmap myframe = ((BitmapDrawable) drawable).getBitmap();
-                Canvas c = new Canvas( thumbnail );
-                c.drawBitmap( myframe, 0, 0, null );
+                if( null != drawable ) {
+                    Bitmap myframe = ((BitmapDrawable) drawable).getBitmap();
+                    Canvas c = new Canvas( thumbnail );
+                    c.drawBitmap( myframe, 0, 0, null );
+                }
             }
             // Should remove the default image in the frame
             // that this now covers, to improve scrolling speed.

@@ -441,7 +441,7 @@ public class PhoneStatusBar extends StatusBar {
             String IMAGE_FILENAME = "notification_tracking_bg.png";
             FrameLayout f = (FrameLayout) mTrackingView.findViewById(R.id.notification_tracking_bg);
             StringBuilder builder = new StringBuilder();
-            builder.append(Environment.getExternalStorageDirectory().toString() + "/mytheme/notification/");
+            builder.append(Environment.getExternalStorageDirectory().toString() + "/mytheme/" + SystemProperties.get("persist.sys.theme") + "/notification/");
             builder.append(File.separator);
             builder.append(IMAGE_FILENAME);
             String filePath = builder.toString();
@@ -492,7 +492,7 @@ public class PhoneStatusBar extends StatusBar {
             String MY_NOTIFICATION_FORMAT_SUFFIX_NORMAL = "normal";
             String MY_NOTIFICATION_FORMAT_SUFFIX_PRESSED = "pressed";
             StringBuilder builder = new StringBuilder();
-            builder.append(Environment.getExternalStorageDirectory().toString() + "/mytheme/notification/");
+            builder.append(Environment.getExternalStorageDirectory().toString() + "/mytheme/" + SystemProperties.get("persist.sys.theme") + "/notification/");
             builder.append(File.separator);
             builder.append(MY_NOTIFICATION_FORMAT);
             String filePathFormat = builder.toString();
@@ -1139,7 +1139,7 @@ public class PhoneStatusBar extends StatusBar {
             String MY_NOTIFICATION_FORMAT_SUFFIX_PRESSED = "pressed";
 
             StringBuilder builder = new StringBuilder();
-            builder.append(Environment.getExternalStorageDirectory().toString() + "/mytheme/notification/");
+            builder.append(Environment.getExternalStorageDirectory().toString() + "/mytheme/" + SystemProperties.get("persist.sys.theme") + "/notification/");
             builder.append(File.separator);
             builder.append(MY_NOTIFICATION_FORMAT);
             String filePathFormat = builder.toString();
