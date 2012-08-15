@@ -894,7 +894,7 @@
     <string name="copyright_title" msgid="865906688917260647">"著作権"</string>
     <string name="license_title" msgid="1990487604356037871">"ライセンス"</string>
     <string name="terms_title" msgid="7697580845616764642">"利用規約"</string>
-    <string name="header_category_jcrom" msgid="2073558547468647138">"JCROM"</string>
+    <string name="jcrom_settings" msgid="7697580845616764652">"JCROMの設定"</string>
     <string name="settings_license_activity_title" msgid="7553683406244228650">"オープンソースライセンス"</string>
     <string name="settings_license_activity_unavailable" msgid="4210539215951487627">"ライセンスの読み込み中に問題が発生しました。"</string>
     <string name="settings_license_activity_loading" msgid="3337535809093591740">"読み込み中..."</string>
