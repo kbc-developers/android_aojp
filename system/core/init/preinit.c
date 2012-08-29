@@ -54,7 +54,8 @@ static const file_info const aosp_file_list[] = {
 
 void preinit(void)
 {
-    int rom_type;
+    int feature_aosp;
+    int rooted;
     char build_target[4] = { 0 };
     FILE* fp;
     const file_info* file_list_ptr = NULL;
@@ -63,7 +64,12 @@ void preinit(void)
 
     mknod("/mbs/mmcblk0p14", S_IFBLK | 0666, makedev(179, 14));
     mount("/mbs/mmcblk0p14", "/mbs/mnt/system", "ext4", 0, NULL);
-    rom_type = (access("/mbs/mnt/system/framework/twframework.jar", R_OK) == 0) ? 1 : 0;
+    feature_aosp = (access("/mbs/mnt/system/framework/twframework.jar", R_OK) == 0) ? 0 : 1;
+    if ((access("/mbs/mnt/system/bin/su", R_OK) == 0)
+    ||  (access("/mbs/mnt/system/xbin/su", R_OK) == 0)) {
+        ERROR("rom is rooted, remove internal su binary.\n");
+        remove("mbs/bin/su");
+    }
     umount("/mbs/mnt/system");
     remove("/mbs/mmcblk0p14");
 
@@ -72,16 +78,22 @@ void preinit(void)
         fread(&build_target, 1, 4, fp);
         fclose(fp);
     }
-    ERROR("build_target=%c rom_type=%d\n", build_target[0], rom_type);
 
-    if (rom_type) {
-        ERROR("init to samsung rom\n");
-        file_list_ptr = samsung_file_list;
-        file_list_size = ARRAY_SIZE(samsung_file_list);
-    } else {
+    fp = fopen("/proc/sys/kernel/feature_aosp", "wb");
+    if (fp) {
+        fwrite(&feature_aosp, sizeof(int), 1, fp);
+        fclose(fp);
+    }
+    ERROR("build_target=%c feature_aosp=%d\n", build_target[0], feature_aosp);
+
+    if (feature_aosp) {
         ERROR("init to aosp rom\n");
         file_list_ptr = aosp_file_list;
         file_list_size = ARRAY_SIZE(aosp_file_list);
+    } else {
+        ERROR("init to samsung rom\n");
+        file_list_ptr = samsung_file_list;
+        file_list_size = ARRAY_SIZE(samsung_file_list);
     }
 
     for (i = 0; i < file_list_size; i++) {
