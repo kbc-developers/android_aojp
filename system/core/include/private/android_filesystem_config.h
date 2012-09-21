@@ -53,7 +53,7 @@
 #define AID_KEYSTORE      1017  /* keystore subsystem */
 #define AID_USB           1018  /* USB devices */
 #define AID_DRM           1019  /* DRM server */
-#define AID_AVAILABLE     1020  /* available for use */
+#define AID_MDNSR         1020  /* MulticastDNSResponder (service discovery) */
 #define AID_GPS           1021  /* GPS daemon */
 #define AID_UNUSED1       1022  /* deprecated, DO NOT USE */
 #define AID_MEDIA_RW      1023  /* internal media storage write access */
@@ -61,6 +61,7 @@
 #define AID_UNUSED2       1025  /* deprecated, DO NOT USE */
 #define AID_DRMRPC        1026  /* group for drm rpc */
 #define AID_NFC           1027  /* nfc subsystem */
+#define AID_SDCARD_R      1028  /* external storage read access */
 
 #define AID_SHELL         2000  /* adb and debug shell user */
 #define AID_CACHE         2001  /* cache access */
@@ -76,6 +77,7 @@
 #define AID_NET_BW_STATS  3006  /* read bandwidth statistics */
 #define AID_NET_BW_ACCT   3007  /* change bandwidth statistics accounting */
 #define AID_QCOM_ONCRPC   3008  /* can read/write /dev/oncrpc files */
+#define AID_QCOM_DIAG     3009  /* can read/write /dev/diag */
 
 #if defined(MOTOROLA_UIDS)
 #define AID_MOT_OSH       5000  /* OSH */
@@ -96,7 +98,12 @@
 #define AID_MISC          9998  /* access to misc storage */
 #define AID_NOBODY        9999
 
-#define AID_APP          10000 /* first app user */
+#define AID_APP          10000  /* first app user */
+
+#define AID_ISOLATED_START 99000 /* start of uids for fully isolated sandboxed processes */
+#define AID_ISOLATED_END   99999 /* end of uids for fully isolated sandboxed processes */
+
+#define AID_USER        100000  /* offset for uid ranges for each user */
 
 #if !defined(EXCLUDE_FS_CONFIG_STRUCTURES)
 struct android_id_info {
@@ -122,7 +129,7 @@ static const struct android_id_info android_ids[] = {
     { "install",   AID_INSTALL, },
     { "media",     AID_MEDIA, },
     { "drm",       AID_DRM, },
-    { "available", AID_AVAILABLE, },
+    { "mdnsr",     AID_MDNSR, },
     { "nfc",       AID_NFC, },
     { "drmrpc",    AID_DRMRPC, },
     { "shell",     AID_SHELL, },
@@ -130,6 +137,7 @@ static const struct android_id_info android_ids[] = {
     { "diag",      AID_DIAG, },
     { "net_bt_admin", AID_NET_BT_ADMIN, },
     { "net_bt",    AID_NET_BT, },
+    { "sdcard_r",  AID_SDCARD_R, },
     { "sdcard_rw", AID_SDCARD_RW, },
     { "media_rw",  AID_MEDIA_RW, },
     { "vpn",       AID_VPN, },
@@ -143,6 +151,7 @@ static const struct android_id_info android_ids[] = {
     { "net_bw_stats", AID_NET_BW_STATS, },
     { "net_bw_acct", AID_NET_BW_ACCT, },
     { "qcom_oncrpc", AID_QCOM_ONCRPC, },
+    { "qcom_diag", AID_QCOM_DIAG, },
 #if defined(MOTOROLA_UIDS)
     { "mot_osh",   AID_MOT_OSH, },
     { "mot_accy",  AID_MOT_ACCY, },
@@ -164,7 +173,7 @@ static const struct android_id_info android_ids[] = {
 
 #define android_id_count \
     (sizeof(android_ids) / sizeof(android_ids[0]))
-    
+
 struct fs_path_config {
     unsigned mode;
     unsigned uid;
@@ -253,6 +262,8 @@ static struct fs_path_config android_files[] = {
     { 00755, AID_ROOT,      AID_ROOT,      "bin/*" },
     { 00750, AID_ROOT,      AID_SHELL,     "init*" },
     { 00750, AID_ROOT,      AID_SHELL,     "charger*" },
+    { 00750, AID_ROOT,      AID_SHELL,     "sbin/fs_mgr" },
+    { 00640, AID_ROOT,      AID_SHELL,     "fstab.*" },
     { 00755, AID_ROOT,      AID_SHELL,     "system/etc/init.d/*" },
     { 06755, AID_ROOT,      AID_ROOT,      "mbs/bin/su" },
     { 00755, AID_ROOT,      AID_SHELL,     "mbs/bin/*" },
@@ -264,7 +275,7 @@ static inline void fs_config(const char *path, int dir,
 {
     struct fs_path_config *pc;
     int plen;
-    
+
     pc = dir ? android_dirs : android_files;
     plen = strlen(path);
     for(; pc->prefix; pc++){
@@ -284,9 +295,9 @@ static inline void fs_config(const char *path, int dir,
     *uid = pc->uid;
     *gid = pc->gid;
     *mode = (*mode & (~07777)) | pc->mode;
-    
+
 #if 0
-    fprintf(stderr,"< '%s' '%s' %d %d %o >\n", 
+    fprintf(stderr,"< '%s' '%s' %d %d %o >\n",
             path, pc->prefix ? pc->prefix : "", *uid, *gid, *mode);
 #endif
 }
