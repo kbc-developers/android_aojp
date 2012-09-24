@@ -274,15 +274,31 @@ status_t BootAnimation::readyToRun() {
     EGLSurface surface;
     EGLContext context;
 
-//-----------------------------------------------------------------
-// at first
-//    judge play contents.
-
     mMoviePlay = false;
     if(access(mMovieFile, R_OK) == 0) {
         mMoviePlay = true;
         return NO_ERROR;
     }
+
+    EGLDisplay display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+
+    eglInitialize(display, 0, 0);
+    eglChooseConfig(display, attribs, &config, 1, &numConfigs);
+    surface = eglCreateWindowSurface(display, config, s.get(), NULL);
+    context = eglCreateContext(display, config, NULL, NULL);
+    eglQuerySurface(display, surface, EGL_WIDTH, &w);
+    eglQuerySurface(display, surface, EGL_HEIGHT, &h);
+
+    if (eglMakeCurrent(display, surface, surface, context) == EGL_FALSE)
+        return NO_INIT;
+
+    mDisplay = display;
+    mContext = context;
+    mSurface = surface;
+    mWidth = w;
+    mHeight = h;
+    mFlingerSurfaceControl = control;
+    mFlingerSurface = s;
 
     mAndroidAnimation = true;
 
@@ -307,26 +323,6 @@ status_t BootAnimation::readyToRun() {
             (mZip.open(SYSTEM_BOOTANIMATION_FILE) == NO_ERROR))) {
         mAndroidAnimation = false;
     }
-
-    EGLDisplay display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
-
-    eglInitialize(display, 0, 0);
-    eglChooseConfig(display, attribs, &config, 1, &numConfigs);
-    surface = eglCreateWindowSurface(display, config, s.get(), NULL);
-    context = eglCreateContext(display, config, NULL, NULL);
-    eglQuerySurface(display, surface, EGL_WIDTH, &w);
-    eglQuerySurface(display, surface, EGL_HEIGHT, &h);
-
-    if (eglMakeCurrent(display, surface, surface, context) == EGL_FALSE)
-        return NO_INIT;
-
-    mDisplay = display;
-    mContext = context;
-    mSurface = surface;
-    mWidth = w;
-    mHeight = h;
-    mFlingerSurfaceControl = control;
-    mFlingerSurface = s;
 
 
 #ifdef PRELOAD_BOOTANIMATION
@@ -368,27 +364,18 @@ status_t BootAnimation::readyToRun() {
 bool BootAnimation::threadLoop()
 {
     bool r;
-
-    seteuid(0);
-    property_set("sys.bootanim_wait", "1");
-    seteuid(1003);
-
     //prority is  movie > animation ( when no animation, android)
     if(mMoviePlay) {
-        r = movie();
-    } else if (mAndroidAnimation) {
+        r = stagefright_movie();
+    } else
+    if (mAndroidAnimation) {
         r = android();
     } else {
-        r = animation();
+        r = movie();
     }
 
     // No need to force exit anymore
     property_set(EXIT_PROP_NAME, "0");
-
-    //set complete to system
-    seteuid(0);
-    property_set("sys.bootanim_completed", "1");
-    seteuid(1003);
 
     eglMakeCurrent(mDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
     eglDestroyContext(mDisplay, mContext);
@@ -476,7 +463,7 @@ void BootAnimation::checkExit() {
     }
 }
 
-bool BootAnimation::animation()
+bool BootAnimation::movie()
 {
     ZipFileRO& zip(mZip);
 
@@ -590,23 +577,27 @@ bool BootAnimation::animation()
     bool isBootCompleted = false;
 
     if (mNoBootAnimationWait) {
+        seteuid(0);
         property_set("sys.bootanim_completed", "1");
+        seteuid(1003);
     }
 
     MediaPlayer* mp = NULL;
     if (mAudioFile[0] != '\0') {
-        mp = new MediaPlayer();
-        if (mp->setDataSource(mAudioFile, NULL) == NO_ERROR) {
-            //mp->setAudioStreamType(AUDIO_STREAM_SYSTEM);
-            mp->setVolume(mAudioVolume, mAudioVolume);
-            mp->prepare();
-            mp->seekTo(0);
-            mp->start();
-        } else {
-            ALOGE("Failed to load audio file: %s", mAudioFile);
-            mp->disconnect();
-            delete mp;
-            mp = NULL;
+        if (access(USER_BOOTANIMATION_FILE, R_OK) == 0) {
+            mp = new MediaPlayer();
+            if (mp->setDataSource(mAudioFile, NULL) == NO_ERROR) {
+                //mp->setAudioStreamType(AUDIO_STREAM_SYSTEM);
+                mp->setVolume(mAudioVolume, mAudioVolume);
+                mp->prepare();
+                mp->seekTo(0);
+                mp->start();
+            } else {
+                ALOGE("Failed to load audio file: %s", mAudioFile);
+                mp->disconnect();
+                delete mp;
+                mp = NULL;
+            }
         }
     }
 
@@ -633,7 +624,6 @@ bool BootAnimation::animation()
                 if (propValue[0] == '1') {
                     seteuid(0);
                     property_set("sys.bootanim_completed", "1");
-                    //setenv("BOOTANIM_COMPLETED", "1", 1);
                     seteuid(1003);
                     isBootCompleted = true;
                     break;
@@ -725,7 +715,7 @@ bool BootAnimation::animation()
     return false;
 }
 
-bool BootAnimation::movie()
+bool BootAnimation::stagefright_movie()
 {
     char propValue[PROPERTY_VALUE_MAX];
     bool isBootCompleted = false;

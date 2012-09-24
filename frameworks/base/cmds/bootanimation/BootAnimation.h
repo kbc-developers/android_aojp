@@ -86,8 +86,8 @@ private:
     status_t initTexture(Texture* texture, AssetManager& asset, const char* name);
     status_t initTexture(void* buffer, size_t len);
     bool android();
-    bool animation();
     bool movie();
+    bool stagefright_movie();
 
     void checkExit();
 

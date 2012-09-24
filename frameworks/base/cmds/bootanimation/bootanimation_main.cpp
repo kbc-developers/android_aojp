@@ -50,9 +50,10 @@ int main(int argc, char** argv)
     property_get("persist.sys.nobootanimationwait", value, "0");
     int noBootAnimationWait = atoi(value);
     //for compatibility
-    property_get("persist.sys.nowait_animation", value, "0");
-    noBootAnimationWait += atoi(value);
-    
+    if (noBootAnimationWait == 0) {
+        property_get("persist.sys.nowait_animation", value, "0");
+        noBootAnimationWait = atoi(value);
+    }
     ALOGI_IF(noBootAnimationWait,  "boot animation wait disabled");
 
     char bootsoundFile[PROPERTY_VALUE_MAX];
@@ -80,12 +81,14 @@ int main(int argc, char** argv)
         ALOGI("bootsound_volume=%f", bootsoundVolume);
     }
 
-    char themeAnimFile[PROPERTY_VALUE_MAX] = { 0 };
-    property_get("persist.sys.force.hobby", value, "false");
-    if (strcmp(value, "true") == 0) {
-        if (property_get("persist.sys.theme", value, NULL) > 0) {
-            sprintf(themeAnimFile, "/sdcard/mytheme/%s/bootanime/bootanimation.zip", value);
-        }
+    if (argc > 1) {
+        ALOGI("bootanim_file args[1]=%s", argv[1]);
+    }
+    if (argc > 2) {
+        ALOGI("bootsound_file args[2]=%s", argv[2]);
+    }
+    if (argc > 3) {
+        ALOGI("boomovie_file args[3]=%s", argv[3]);
     }
 
     if (!noBootAnimation) {
@@ -95,19 +98,10 @@ int main(int argc, char** argv)
         sp<ProcessState> proc(ProcessState::self());
         ProcessState::self()->startThreadPool();
 
-        if(argc > 1) {
-            ALOGI("bootanim_file_args=%s", argv[1]);
-        }
-        if(argc > 2) {
-            ALOGI("bootsound_file_args=%s", argv[2]);
-        }
-        if(argc > 3) {
-            ALOGI("boomovie_file=%s", argv[3]);
-        }
         // create the boot animation object
         sp<BootAnimation> boot = new BootAnimation(
                                          noBootAnimationWait ? true : false,
-                                         themeAnimFile[0] != 0 ? themeAnimFile : argc > 1 ? argv[1] : NULL,
+                                         noBootAnimation ? NULL : (argc > 1 ? argv[1] : NULL),
                                          noBootSound ? NULL : (argc > 2 ? argv[2] : bootsoundFile),
                                          noBootMovie ? NULL : (argc > 3 ? argv[3] : bootmovieFile),
                                          bootsoundVolume);

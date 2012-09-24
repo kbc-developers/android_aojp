@@ -850,6 +850,7 @@ extern "C" bool _ZN7android11AudioSystem15isLowVisibilityENS0_11stream_typeE(aud
 
 #endif // AUDIO_LEGACY
 
+// for one-seg
 extern "C" status_t _ZN7android11AudioSystem16getOutputLatencyEPji(uint32_t* latency, int streamType)
 {
     return AudioSystem::getOutputLatency(latency, (audio_stream_type_t)streamType);
