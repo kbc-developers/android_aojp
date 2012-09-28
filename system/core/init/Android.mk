@@ -15,8 +15,12 @@ LOCAL_SRC_FILES:= \
 	signal_handler.c \
 	init_parser.c \
 	ueventd.c \
-	ueventd_parser.c \
-	preinit.c
+	ueventd_parser.c
+
+ifeq ($(TARGET_PRODUCT), cm_d2dcm)
+LOCAL_SRC_FILES += preinit.c
+LOCAL_CFLAGS += -DTARGET_DEVICE_SC06D
+endif
 
 ifeq ($(strip $(INIT_BOOTCHART)),true)
 LOCAL_SRC_FILES += bootchart.c

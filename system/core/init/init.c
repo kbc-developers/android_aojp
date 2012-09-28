@@ -737,9 +737,11 @@ int main(int argc, char **argv)
     /* clear the umask */
     umask(0);
 
+#ifdef TARGET_DEVICE_SC06D
     mkdir("/mbs/mnt", 0755);
     mkdir("/mbs/mnt/system", 0755);
     mkdir("/mbs/mnt/data", 0755);
+#endif
 
         /* Get the basic filesystem setup we need put
          * together in the initramdisk on / and then we'll
@@ -771,8 +773,10 @@ int main(int argc, char **argv)
     INFO("reading config file\n");
 
     if (!charging_mode_booting()) {
+#ifdef TARGET_DEVICE_SC06D
         extern void preinit(void);
         preinit();
+#endif
         init_parse_config_file("/init.rc");
     } else
         init_parse_config_file("/lpm.rc");
