@@ -167,8 +167,10 @@ static void setup_tweak_props(void)
         
         if (strcmp("ro.sys.usb.config", key) == 0) {
             put_usb_config = 1;
+            property_set("persist.sys.usb.config", value);
+        } else {
+            property_set(key, value);
         }
-        property_set(key, value);
     }
 
     if (put_usb_config == 0) {
