@@ -250,7 +250,7 @@ void setup_ext4sd(void)
 
     filerep("/init.qcom.rc",
         "#@ext4sd_service",
-        "service ext4sd /sbin/sdcard1 /mnt/ext4sd 1023 1023\n    "
+        "service ext4sd /sbin/ext4sd /mnt/ext4sd 1023 1023\n    "
         "class late_start");
 
     fileadd("/fstab.qcom",
