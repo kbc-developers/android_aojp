@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2011 The Android Open Source Project
  * Copyright (C) 2011 The CyanogenMod Project
+ * Copyright (C) 2011 sakuramilk <c.sakuramilk@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,15 +48,28 @@ char const*const BUTTON_FILE
         = "/sys/class/sec/sec_touchkey/brightness";
 #endif
 
-char const*const GENERIC_NOTIFICATION_FILE
-        = "/sys/class/misc/backlightnotification/notification_led";
-#define GENERIC_BLN_NOTIFY_ON   (1)
-#define GENERIC_BLN_NOTIFY_OFF  (0)
-
 #ifdef LED_NOTIFICATION
 static char const RED_LED_DIR[]   = "/sys/class/leds/red";
 static char const BLUE_LED_DIR[]  = "/sys/class/leds/blue";
 #endif // LED_NOTIFICATION
+
+#define LIGHT_ON    (1)
+#define LIGHT_OFF   (2)
+
+/* GENERIC_BLN */
+#define GENERIC_BLN_NOTIFY_ON   (1)
+#define GENERIC_BLN_NOTIFY_OFF  (0)
+
+/* CM LED NOTIFICATIONS BACKLIGHT */
+#define CM_BLN_ENABLE_BL   (1)
+#define CM_BLN_DISABLE_BL  (2)
+
+char const*const GENERIC_NOTIFICATION_FILE
+        = "/sys/class/misc/backlightnotification/notification_led";
+
+char const*const CM_NOTIFICATION_FILE
+        = "/sys/class/misc/notification/led";
+
 void init_globals(void)
 {
     // init the mutex
@@ -91,6 +105,7 @@ write_int(char const* path, int value)
     int fd;
     static int already_warned = 0;
 
+    ALOGV("write_int : path %s, value %d", path, value);
     fd = open(path, O_RDWR);
     if (fd >= 0) {
         char buffer[20];
@@ -265,8 +280,8 @@ set_light_buttons(struct light_device_t* dev,
     int err = 0;
 
     pthread_mutex_lock(&g_lock);
-    ALOGD("set_light_button on=%d\n", g_enable_touchlight ? 1 : 0);
-    err = write_int(BUTTON_FILE, g_enable_touchlight ? 1 : 0);
+    ALOGD("set_light_button on=%d\n", g_enable_touchlight ? LIGHT_ON : LIGHT_OFF);
+    err = write_int(BUTTON_FILE, g_enable_touchlight ? LIGHT_ON : LIGHT_OFF);
     pthread_mutex_unlock(&g_lock);
 
     return err;
@@ -301,24 +316,29 @@ set_light_notification(struct light_device_t* dev,
         struct light_state_t const* state)
 {
     int res = 0;
+    int on;
 
-#ifdef LED_NOTIFICATION
      ALOGD("set_light_notification: color=%#010x, fM=%u, fOnMS=%d, fOffMs=%d.",
          state->color, state->flashMode, state->flashOnMS, state->flashOffMS);
 
     pthread_mutex_lock(&g_lock);
 
-    int err = write_int( GENERIC_NOTIFICATION_FILE, is_lit(state) ?
+    on = is_lit(state);
+
+    write_int(GENERIC_NOTIFICATION_FILE, on ?
                     GENERIC_BLN_NOTIFY_ON :
                     GENERIC_BLN_NOTIFY_OFF);
 
+    write_int(CM_NOTIFICATION_FILE, on ? CM_BLN_ENABLE_BL : CM_BLN_DISABLE_BL);
+
+#ifdef LED_NOTIFICATION
     comp_led_states(&notifications_red, &notifications_blue, state);
 
     if ((res = set_led(RED_LED_DIR,  &battery_red,  &notifications_red)) >= 0)
            res = set_led(BLUE_LED_DIR, &battery_blue, &notifications_blue);
+#endif // LED_NOTIFICATION
 
     pthread_mutex_unlock(&g_lock);
-#endif // LED_NOTIFICATION
 
     return res;
 }
@@ -339,6 +359,8 @@ static int open_lights(const struct hw_module_t* module, char const* name,
 {
     int (*set_light)(struct light_device_t* dev,
             struct light_state_t const* state);
+
+    ALOGE("CMD name =>%s\n", name);
 
     if (0 == strcmp(LIGHT_ID_BACKLIGHT, name)) {
         set_light = set_light_backlight;
@@ -382,6 +404,6 @@ struct hw_module_t HAL_MODULE_INFO_SYM = {
     .version_minor = 0,
     .id = LIGHTS_HARDWARE_MODULE_ID,
     .name = "Samsung Exynos4210 Lights Module",
-    .author = "The CyanogenMod Project",
+    .author = "sakuramilk <c.sakuramilk@gmail.com>",
     .methods = &lights_module_methods,
 };
