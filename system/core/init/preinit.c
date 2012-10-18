@@ -32,16 +32,16 @@ typedef struct rom_info {
 } rom_info;
 
 
-const file_info const samsung_file_list[] = {
+static const file_info const samsung_jb_file_list[] = {
     { "/default.prop", 0644, AID_ROOT, AID_ROOT },
 };
 
-static const rom_info const samsung_info = {
-    .base_dir = "/mbs/samsung",
-    .file_list = samsung_file_list,
+static const rom_info const samsung_jb_info = {
+    .base_dir = "/mbs/samsung-jb",
+    .file_list = samsung_jb_file_list,
 };
 
-const file_info const aosp_jb_file_list[] = {
+static const file_info const aosp_jb_file_list[] = {
     { "/fstab.qcom", 0640, AID_ROOT, AID_ROOT },
     { "/init.bt.rc", 0750, AID_ROOT, AID_ROOT },
     { "/init.qcom.class_core.sh", 0750, AID_ROOT, AID_ROOT },
@@ -245,13 +245,13 @@ void setup_ext4sd(void)
 {
     filerep("/init.rc",
         "#@ext4sd_mkdir",
-        "    mkdir /mnt/ext4sd 0775 media_rw media_rw\n    "
-        "chown media_rw media_rw /mnt/ext4sd");
+        "    mkdir /mnt/ext4sd 0775 media_rw media_rw\n"
+        "    chown media_rw media_rw /mnt/ext4sd");
 
     filerep("/init.qcom.rc",
         "#@ext4sd_service",
-        "service ext4sd /sbin/ext4sd /mnt/ext4sd 1023 1023\n    "
-        "class late_start");
+        "service ext4sd /sbin/ext4sd /mnt/ext4sd 1023 1023\n"
+        "    class late_start");
 
     fileadd("/fstab.qcom",
         "/dev/block/mmcblk1p1                                    "
@@ -295,13 +295,13 @@ void preinit(void)
     ERROR("build_target=%c feature_aosp=%d\n", build_target[0], feature_aosp);
 
     if (feature_aosp) {
-        ERROR("init to aosp rom\n");
+        ERROR("init to aosp-jb rom\n");
         rom_info_ptr = &aosp_jb_info;
         file_list_size = ARRAY_SIZE(aosp_jb_file_list);
     } else {
-        ERROR("init to samsung rom\n");
-        rom_info_ptr = &samsung_info;
-        file_list_size = ARRAY_SIZE(aosp_jb_file_list);
+        ERROR("init to samsung-jb rom\n");
+        rom_info_ptr = &samsung_jb_info;
+        file_list_size = ARRAY_SIZE(samsung_jb_file_list);
     }
 
     
