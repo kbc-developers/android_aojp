@@ -32,7 +32,7 @@ typedef struct rom_info {
 } rom_info;
 
 
-static const file_info const samsung_file_list[] = {
+static const file_info const samsung_ics_file_list[] = {
     { "/default.prop", 0644, AID_ROOT, AID_ROOT },
     { "/init.bt.rc", 0750, AID_ROOT, AID_ROOT },
     { "/init.carrier.rc", 0750, AID_ROOT, AID_ROOT },
@@ -46,9 +46,9 @@ static const file_info const samsung_file_list[] = {
     { "/ueventd.rc", 0644, AID_ROOT, AID_ROOT },
 };
 
-static const rom_info const samsung_info = {
-    .base_dir = "/mbs/samsung",
-    .file_list = samsung_file_list,
+static const rom_info const samsung_ics_info = {
+    .base_dir = "/mbs/samsung-ics",
+    .file_list = samsung_ics_file_list,
 };
 
 static const file_info const aosp_ics_file_list[] = {
@@ -172,8 +172,10 @@ static void setup_tweak_props(void)
         
         if (strcmp("ro.sys.usb.config", key) == 0) {
             put_usb_config = 1;
+            property_set("persist.sys.usb.config", value);
+        } else {
+            property_set(key, value);
         }
-        property_set(key, value);
     }
 
     if (put_usb_config == 0) {
@@ -253,7 +255,7 @@ void setup_ext4sd(void)
 
     filerep("/init.qcom.rc",
         "#@ext4sd_service",
-        "service ext4sd /sbin/sdcard1 /mnt/ext4sd 1023 1023\n"
+        "service ext4sd /sbin/ext4sd /mnt/ext4sd 1023 1023\n"
         "    class late_start\n"
         "    disabled");
 
@@ -297,13 +299,13 @@ void preinit(void)
     ERROR("build_target=%c feature_aosp=%d\n", build_target[0], feature_aosp);
 
     if (feature_aosp) {
-        ERROR("init to aosp rom\n");
+        ERROR("init to aosp-ics rom\n");
         rom_info_ptr = &aosp_ics_info;
         file_list_size = ARRAY_SIZE(aosp_ics_file_list);
     } else {
-        ERROR("init to samsung rom\n");
-        rom_info_ptr = &samsung_info;
-        file_list_size = ARRAY_SIZE(samsung_file_list);
+        ERROR("init to samsung-ics rom\n");
+        rom_info_ptr = &samsung_ics_info;
+        file_list_size = ARRAY_SIZE(samsung_ics_file_list);
     }
 
     
