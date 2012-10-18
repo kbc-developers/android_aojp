@@ -28,6 +28,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.os.SystemProperties;
 import android.util.Log;
 
 import com.android.internal.telephony.IWapPushManager;
@@ -216,6 +217,12 @@ public class WapPushManager extends Service {
             }
             if (LOCAL_LOGV) Log.v(LOG_TAG, "starting " + lastapp.packageName
                     + "/" + lastapp.className);
+
+            if ("jp.co.nttdocomo.carriermail".equals(lastapp.packageName) &&
+                "communicase".equals(SystemProperties.get("persist.tgs3.carriermail", "spmode"))) {
+                lastapp.packageName = "com.nttdocomo.communicase.carriermail";
+                lastapp.className = "com.nttdocomo.communicase.mail.SMSService";
+            }
 
             if (lastapp.needSignature != 0) {
                 if (!signatureCheck(lastapp.packageName)) {
