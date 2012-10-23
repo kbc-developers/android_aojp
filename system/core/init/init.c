@@ -924,6 +924,7 @@ int main(int argc, char **argv)
     umask(0);
 
 #ifdef TARGET_DEVICE_SC06D
+    mkdir("/mbs", 0755);
     mkdir("/mbs/mnt", 0755);
     mkdir("/mbs/mnt/system", 0755);
     mkdir("/mbs/mnt/data", 0755);
