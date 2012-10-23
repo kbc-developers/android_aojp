@@ -598,7 +598,7 @@ final class GsmServiceStateTracker extends ServiceStateTracker {
                     }
 
                     loge("[DBG] regState=" + regState + " gprsState=" + gprsState + " newSS.getState()=" + newSS.getState());
-                    if (regState == 13) {
+                    if (regState == 13 || regState == 2) {
                        if (gprsState == ServiceState.STATE_IN_SERVICE) {
                            loge("[DBG] gprsState == ServiceState.STATE_IN_SERVICE");
                            regState = 1;
