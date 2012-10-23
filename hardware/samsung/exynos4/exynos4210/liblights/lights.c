@@ -105,7 +105,7 @@ write_int(char const* path, int value)
     int fd;
     static int already_warned = 0;
 
-    ALOGV("write_int : path %s, value %d", path, value);
+    //ALOGV("write_int : path %s, value %d", path, value);
     fd = open(path, O_RDWR);
     if (fd >= 0) {
         char buffer[20];
