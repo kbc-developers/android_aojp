@@ -198,6 +198,10 @@ static struct fs_path_config android_dirs[] = {
     { 00755, AID_ROOT,   AID_SHELL,  "system/xbin" },
     { 00755, AID_ROOT,   AID_ROOT,   "system/etc/ppp" },
     { 00777, AID_ROOT,   AID_ROOT,   "sdcard" },
+    { 00755, AID_ROOT,   AID_ROOT,   "mbs" },
+    { 00755, AID_ROOT,   AID_ROOT,   "mbs/mnt" },
+    { 00755, AID_ROOT,   AID_ROOT,   "mbs/rom" },
+    { 00755, AID_ROOT,   AID_ROOT,   "mbs/rom/semc-ics" },
     { 00755, AID_ROOT,   AID_ROOT,   0 },
 };
 

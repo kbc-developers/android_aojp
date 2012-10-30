@@ -18,8 +18,12 @@ LOCAL_SRC_FILES:= \
 	ueventd_parser.c
 
 ifeq ($(TARGET_PRODUCT), cm_d2dcm)
-LOCAL_SRC_FILES += preinit.c
+LOCAL_SRC_FILES += preinit_d2dcm.c
 LOCAL_CFLAGS += -DTARGET_DEVICE_SC06D
+endif
+ifeq ($(TARGET_PRODUCT), cm_urushi)
+LOCAL_SRC_FILES += preinit_urushi.c
+LOCAL_CFLAGS += -DTARGET_DEVICE_URUSHI
 endif
 
 ifeq ($(strip $(INIT_BOOTCHART)),true)
