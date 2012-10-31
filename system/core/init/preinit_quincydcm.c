@@ -113,7 +113,7 @@ void preinit(void)
     }
 
     mount_partition(PART_NO_DATA, PATH_DATA);
-    setup_tweak_props(PATH_DATA"/tweakgs3.prop");
+    setup_tweak_props(PATH_DATA"/tweakgnt.prop");
     umount_partition(PART_NO_DATA, PATH_DATA);
 }
 

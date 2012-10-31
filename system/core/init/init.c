@@ -737,7 +737,7 @@ int main(int argc, char **argv)
     /* clear the umask */
     umask(0);
 
-#ifdef TARGET_DEVICE_SC06D
+#if defined(TARGET_DEVICE_SC06D) || defined(TARGET_DEVICE_SC05D)
     mkdir("/mbs/mnt", 0755);
     mkdir("/mbs/mnt/system", 0755);
     mkdir("/mbs/mnt/data", 0755);
@@ -773,7 +773,7 @@ int main(int argc, char **argv)
     INFO("reading config file\n");
 
     if (!charging_mode_booting()) {
-#ifdef TARGET_DEVICE_SC06D
+#if defined(TARGET_DEVICE_SC06D) || defined(TARGET_DEVICE_SC05D)
         extern void preinit(void);
         preinit();
 #endif

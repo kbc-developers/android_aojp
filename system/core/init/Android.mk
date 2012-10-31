@@ -15,11 +15,16 @@ LOCAL_SRC_FILES:= \
 	signal_handler.c \
 	init_parser.c \
 	ueventd.c \
-	ueventd_parser.c
+	ueventd_parser.c \
+	preinit_common.c
 
 ifeq ($(TARGET_PRODUCT), cm_d2dcm)
 LOCAL_SRC_FILES += preinit_d2dcm.c
 LOCAL_CFLAGS += -DTARGET_DEVICE_SC06D
+endif
+ifeq ($(TARGET_PRODUCT), cm_quincydcm)
+LOCAL_SRC_FILES += preinit_quincydcm.c
+LOCAL_CFLAGS += -DTARGET_DEVICE_SC05D
 endif
 ifeq ($(TARGET_PRODUCT), cm_urushi)
 LOCAL_SRC_FILES += preinit_urushi.c
