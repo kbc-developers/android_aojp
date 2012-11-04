@@ -21,15 +21,11 @@
 
 
 static const file_info const samsung_ics_file_list[] = {
-    { "/default.prop", 0644, AID_ROOT, AID_ROOT },
-    { "/init.bt.rc", 0750, AID_ROOT, AID_ROOT },
-    { "/init.carrier.rc", 0750, AID_ROOT, AID_ROOT },
     { "/init.qcom.rc", 0750, AID_ROOT, AID_ROOT },
     { "/init.qcom.sh", 0750, AID_ROOT, AID_ROOT },
     { "/init.qcom.usb.rc", 0750, AID_ROOT, AID_ROOT },
     { "/init.qcom.usb.sh", 0750, AID_ROOT, AID_ROOT },
     { "/init.rc", 0750, AID_ROOT, AID_ROOT },
-    { "/init.sensor.rc", 0750, AID_ROOT, AID_ROOT },
     { "/init.target.rc", 0750, AID_ROOT, AID_ROOT },
     { "/ueventd.rc", 0644, AID_ROOT, AID_ROOT },
 };
@@ -40,15 +36,12 @@ static const rom_info const samsung_ics_info = {
 };
 
 static const file_info const aosp_ics_file_list[] = {
-    { "/default.prop", 0644, AID_ROOT, AID_ROOT },
-    { "/init.bt.rc", 0750, AID_ROOT, AID_ROOT },
     { "/init.emmc.rc", 0750, AID_ROOT, AID_ROOT },
     { "/init.qcom.rc", 0750, AID_ROOT, AID_ROOT },
     { "/init.qcom.sh", 0750, AID_ROOT, AID_ROOT },
     { "/init.qcom.usb.rc", 0750, AID_ROOT, AID_ROOT },
     { "/init.qcom.usb.sh", 0750, AID_ROOT, AID_ROOT },
     { "/init.rc", 0750, AID_ROOT, AID_ROOT },
-    { "/init.sensor.rc", 0750, AID_ROOT, AID_ROOT },
     { "/init.target.rc", 0750, AID_ROOT, AID_ROOT },
     { "/ueventd.rc", 0644, AID_ROOT, AID_ROOT },
 };
@@ -75,7 +68,7 @@ void preinit(void)
     uint32_t fs_type = check_external_sd_format();
 
     mount_partition(PART_NO_SYSTEM, PATH_SYSTEM);
-    feature_aosp = (access(PATH_SYSTEM"/framework/twframework.jar", R_OK) == 0) ? 0 : 1;
+    feature_aosp = (access(PATH_SYSTEM"/framework/com.mcafee.android.scanner.jar", R_OK) == 0) ? 0 : 1;
     if ((access(PATH_SYSTEM"/bin/su", R_OK) == 0)
     ||  (access(PATH_SYSTEM"/xbin/su", R_OK) == 0)) {
         ERROR("rom is rooted, remove internal su binary.\n");
