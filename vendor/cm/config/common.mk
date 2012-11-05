@@ -53,8 +53,7 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES +=  \
     vendor/cm/proprietary/Term.apk:system/app/Term.apk \
     vendor/cm/proprietary/lib/armeabi/libjackpal-androidterm4.so:system/lib/libjackpal-androidterm4.so \
-	vendor/cm/prebuilt/common/apps/Superuser.apk:system/app/Superuser.apk \
-    vendor/cm/proprietary/AppWidgetPickerActivity.apk:system/app/AppWidgetPickerActivity.apk
+	vendor/cm/prebuilt/common/apps/Superuser.apk:system/app/Superuser.apk
 
 # docomo
 PRODUCT_COPY_FILES +=  \
@@ -158,6 +157,10 @@ else
     # If CM_BUILDTYPE is not defined, set to UNOFFICIAL
     CM_BUILDTYPE := UNOFFICIAL
     CM_EXTRAVERSION :=
+endif
+
+ifneq ($(CM_BUILDTYPE),)
+    CM_BUILDTYPE := $(CM_BUILDTYPE)
 endif
 
 ifdef CM_RELEASE

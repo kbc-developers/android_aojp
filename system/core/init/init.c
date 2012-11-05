@@ -738,7 +738,6 @@ int main(int argc, char **argv)
     umask(0);
 
 #if defined(TARGET_DEVICE_SC06D) || defined(TARGET_DEVICE_SC05D)
-    mkdir("/mbs", 0755);
     mkdir("/mbs/mnt", 0755);
     mkdir("/mbs/mnt/system", 0755);
     mkdir("/mbs/mnt/data", 0755);
