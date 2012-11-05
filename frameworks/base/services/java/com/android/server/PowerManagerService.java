@@ -2268,12 +2268,12 @@ public class PowerManagerService extends IPowerManager.Stub
         private int duration;
         private long startTimeMillis;
         private final String prefix;
-        private boolean tgs3_crt_effect;
+        private boolean tweak_crt_effect;
 
         public ScreenBrightnessAnimator(String name, int priority) {
             super(name, priority);
             prefix = name;
-            tgs3_crt_effect = "0".equals(SystemProperties.get("persist.tgs3.crt_effect", "0"));
+            tweak_crt_effect = "0".equals(SystemProperties.get("persist.tweak.crt_effect", "0"));
         }
 
         @Override
@@ -2384,7 +2384,7 @@ public class PowerManagerService extends IPowerManager.Stub
 
                     if (turningOff && !mHeadless && !mAnimateScreenLights) {
                         int mode = mScreenOffReason == OFF_BECAUSE_OF_PROX_SENSOR
-                                ? 0 : (tgs3_crt_effect ? mAnimationSetting : 0);
+                                ? 0 : (tweak_crt_effect ? mAnimationSetting : 0);
                         if (mDebugLightAnimation) {
                             Slog.v(TAG, "Doing power-off anim, mode=" + mode);
                         }
