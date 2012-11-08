@@ -255,7 +255,7 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
 
     public PhoneWindow(Context context) {
         super(context);
-        if (SystemProperties.getBoolean("ro.tweak.bottom_actionbar", false)) {
+        if (SystemProperties.getBoolean("persist.tweak.bottom_actionbar", false)) {
             mScreenCustomTitleResId = com.android.internal.R.layout.screen_custom_title_bottom;
             mScreenProgressResId = com.android.internal.R.layout.screen_progress_bottom;
             mScreenSimpleResId = com.android.internal.R.layout.screen_simple_bottom;

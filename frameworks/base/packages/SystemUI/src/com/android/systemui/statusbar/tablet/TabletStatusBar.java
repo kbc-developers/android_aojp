@@ -567,8 +567,8 @@ public class TabletStatusBar extends BaseStatusBar implements
 
         // where the icons go
         mIconLayout = (NotificationIconArea.IconLayout) sb.findViewById(R.id.icons);
-        if (SystemProperties.getBoolean("ro.tweak.status_bar_icon_alpha_disabled", false)) {
-            mIconLayout.setAlpha(1.0f);
+        if (!SystemProperties.getBoolean("persist.tweak.sb_icon_alpha", true)) {
+            mIconLayout.setAlpha(255);
         }
 
         ViewConfiguration vc = ViewConfiguration.get(context);

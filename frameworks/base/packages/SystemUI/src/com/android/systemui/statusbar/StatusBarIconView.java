@@ -84,11 +84,12 @@ public class StatusBarIconView extends AnimatedImageView {
             final float scale = (float)imageBounds / (float)outerBounds;
             setScaleX(scale);
             setScaleY(scale);
-            float alpha = res.getFraction(R.dimen.status_bar_icon_drawing_alpha, 1, 1);
-            if (SystemProperties.getBoolean("ro.tweak.status_bar_icon_alpha_disabled", false)) {
-                alpha = 1.0f;
+            final float alpha = res.getFraction(R.dimen.status_bar_icon_drawing_alpha, 1, 1);
+            if (SystemProperties.getBoolean("persist.tweak.sb_icon_alpha", true)) {
+                setAlpha(alpha);
+            } else {
+                setAlpha(255);
             }
-            setAlpha(alpha);
         }
 
         setScaleType(ImageView.ScaleType.CENTER);
@@ -103,11 +104,11 @@ public class StatusBarIconView extends AnimatedImageView {
         setScaleX(scale);
         setScaleY(scale);
         final float alpha = res.getFraction(R.dimen.status_bar_icon_drawing_alpha, 1, 1);
-        String tweakAlpha = SystemProperties.get("ro.tweak.status_bar_icon_drawing_alpha", null);
-        if (tweakAlpha) {
-            alpha = Float.valueOf(tweakAlpha);
+        if (SystemProperties.getBoolean("persist.tweak.sb_icon_alpha", true)) {
+            setAlpha(alpha);
+        } else {
+            setAlpha(255);
         }
-        setAlpha(alpha);
     }
 
     private static boolean streq(String a, String b) {
