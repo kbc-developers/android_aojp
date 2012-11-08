@@ -368,7 +368,7 @@ public class AudioService extends IAudioService.Stub {
 
         // Change music volume steps
         MAX_STREAM_VOLUME[AudioSystem.STREAM_MUSIC] = SystemProperties.getInt(
-            "ro.tweak.music_vol_steps",
+            "persist.tweak.music_vol_steps",
            MAX_STREAM_VOLUME[AudioSystem.STREAM_MUSIC]);
 
         SOUND_EFFECT_VOLUME_DB = SystemProperties.getInt(

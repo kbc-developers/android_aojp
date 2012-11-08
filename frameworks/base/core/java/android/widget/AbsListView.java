@@ -779,7 +779,7 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
     }
 
     private void initAbsListView() {
-        mScrollingCacheOverride = SystemProperties.getBoolean("ro.tweak.scrolling_cache", true);
+        mScrollingCacheOverride = SystemProperties.getBoolean("persist.tweak.scrolling_cache", true);
         Log.i("[AbsListView:DBG]", "initAbsListView mScrollingCacheOverride=" + mScrollingCacheOverride);
 
         // Setting focusable in touch mode will set the focusable property to true

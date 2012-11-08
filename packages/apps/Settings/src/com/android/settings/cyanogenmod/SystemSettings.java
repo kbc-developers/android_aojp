@@ -54,11 +54,11 @@ public class SystemSettings extends SettingsPreferenceFragment implements
 
         mFontSizePref = (ListPreference) findPreference(KEY_FONT_SIZE);
         mFontSizePref.setOnPreferenceChangeListener(this);
-        //if (Utils.isScreenLarge()) {
-        //    getPreferenceScreen().removePreference(findPreference(KEY_NOTIFICATION_DRAWER));
-        //} else {
+        if (Utils.isScreenLarge()) {
+            getPreferenceScreen().removePreference(findPreference(KEY_NOTIFICATION_DRAWER));
+        } else {
             getPreferenceScreen().removePreference(findPreference(KEY_NOTIFICATION_DRAWER_TABLET));
-        //}
+        }
         IWindowManager windowManager = IWindowManager.Stub.asInterface(ServiceManager.getService(Context.WINDOW_SERVICE));
         try {
             if (!windowManager.hasNavigationBar()) {
