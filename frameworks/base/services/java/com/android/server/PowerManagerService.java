@@ -2273,7 +2273,8 @@ public class PowerManagerService extends IPowerManager.Stub
         public ScreenBrightnessAnimator(String name, int priority) {
             super(name, priority);
             prefix = name;
-            tweak_crt_effect = "0".equals(SystemProperties.get("persist.tweak.crt_effect", "0"));
+            tweak_crt_effect = "1".equals(SystemProperties.get("persist.tweak.crt_effect", "1"));
+            Slog.i(TAG, "tweak_crt_effect: " + tweak_crt_effect);
         }
 
         @Override
