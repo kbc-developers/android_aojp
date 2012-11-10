@@ -240,6 +240,7 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
 
     private int mUiOptions = 0;
 
+    private final int mScreenActionBarResId;
     private final int mScreenCustomTitleResId;
     private final int mScreenProgressResId;
     private final int mScreenSimpleResId;
@@ -256,6 +257,11 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
     public PhoneWindow(Context context) {
         super(context);
         if (SystemProperties.getBoolean("persist.tweak.bottom_actionbar", false)) {
+            mScreenActionBarResId = com.android.internal.R.layout.screen_action_bar_bottom;
+        } else {
+            mScreenActionBarResId = com.android.internal.R.layout.screen_action_bar;
+        }
+        if (SystemProperties.getBoolean("persist.tweak.bottom_titlebar", false)) {
             mScreenCustomTitleResId = com.android.internal.R.layout.screen_custom_title_bottom;
             mScreenProgressResId = com.android.internal.R.layout.screen_progress_bottom;
             mScreenSimpleResId = com.android.internal.R.layout.screen_simple_bottom;
@@ -3068,7 +3074,7 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
                 if ((features & (1 << FEATURE_ACTION_BAR_OVERLAY)) != 0) {
                     layoutResource = com.android.internal.R.layout.screen_action_bar_overlay;
                 } else {
-                    layoutResource = com.android.internal.R.layout.screen_action_bar;
+                    layoutResource = mScreenActionBarResId;
                 }
             } else {
                 layoutResource = mScreenTitleResId;

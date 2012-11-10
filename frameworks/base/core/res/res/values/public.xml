@@ -1325,6 +1325,7 @@
   <java-symbol type="layout" name="keyguard_screen_unlock_portrait" />
   <java-symbol type="layout" name="recent_apps_dialog" />
   <java-symbol type="layout" name="screen_action_bar" />
+  <java-symbol type="layout" name="screen_action_bar_bottom" />
   <java-symbol type="layout" name="screen_action_bar_overlay" />
   <java-symbol type="layout" name="screen_custom_title" />
   <java-symbol type="layout" name="screen_custom_title_bottom" />
