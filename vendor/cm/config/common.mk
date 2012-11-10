@@ -176,18 +176,6 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     rsync
 
-# docomo
-PRODUCT_COPY_FILES +=  \
-    vendor/docomo/proprietary/app/DcmWapPushHelper.apk:system/app/DcmWapPushHelper.apk \
-    vendor/docomo/proprietary/app/docomoAccountAuthenticator.apk:system/app/docomoAccountAuthenticator.apk \
-    vendor/docomo/proprietary/lib/libDecoEmojiJniNative.so:system/lib/libDecoEmojiJniNative.so \
-    vendor/docomo/proprietary/lib/libdaaCrypto.so:system/lib/libdaaCrypto.so \
-    vendor/docomo/proprietary/lib/libemojibitmap_type2.so:system/lib/libemojibitmap_type2.so \
-    vendor/docomo/proprietary/lib/libemojidata_type2_docomo.so:system/lib/libemojidata_type2_docomo.so \
-    vendor/docomo/proprietary/lib/libemojifactory_type2.so:system/lib/libemojifactory_type2.so \
-    vendor/docomo/proprietary/lib/libemojijni_type2_ics.so:system/lib/libemojijni_type2_ics.so \
-    vendor/docomo/proprietary/lib/libemojisyswrapper_type2.so:system/lib/libemojisyswrapper_type2.so
-
 PRODUCT_PACKAGE_OVERLAYS += vendor/cm/overlay/dictionaries
 PRODUCT_PACKAGE_OVERLAYS += vendor/cm/overlay/common
 
