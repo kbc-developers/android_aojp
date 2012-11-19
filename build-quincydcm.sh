@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export CM_BUILDTYPE="SKRMLK"
+export CM_BUILDTYPE="KBC"
 
 . build/envsetup.sh
 brunch quincydcm

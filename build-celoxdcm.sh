@@ -3,4 +3,4 @@
 export CM_BUILDTYPE="KBC"
 
 . build/envsetup.sh
-brunch urushi
+brunch celoxdcm
