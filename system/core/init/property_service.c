@@ -93,6 +93,7 @@ struct {
     { "persist.security.",AID_SYSTEM,   0 },
     { "net.pdp",          AID_RADIO,    AID_RADIO },
     { "service.bootanim.exit", AID_GRAPHICS, 0 },
+    { "debuggable.",AID_SYSTEM,   0 },
 #ifdef PROPERTY_PERMS_APPEND
 PROPERTY_PERMS_APPEND
 #endif
@@ -312,7 +313,7 @@ int property_set(const char *name, const char *value)
 
     if(pi != 0) {
         /* ro.* properties may NEVER be modified once set */
-        if(!strncmp(name, "ro.", 3)) return -1;
+        //if(!strncmp(name, "ro.", 3)) return -1;
 
         pa = __system_property_area__;
         update_prop_info(pi, value, valuelen);
