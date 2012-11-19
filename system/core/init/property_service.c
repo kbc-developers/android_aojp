@@ -93,7 +93,7 @@ struct {
     { "persist.security.",AID_SYSTEM,   0 },
     { "net.pdp",          AID_RADIO,    AID_RADIO },
     { "service.bootanim.exit", AID_GRAPHICS, 0 },
-    { "debuggable.",AID_SYSTEM,   0 },
+    { "ro.",AID_SYSTEM,   0 },
 #ifdef PROPERTY_PERMS_APPEND
 PROPERTY_PERMS_APPEND
 #endif
@@ -243,8 +243,8 @@ static int check_perms(const char *name, unsigned int uid, unsigned int gid)
     if (uid == 0)
         return 1;
 
-    if(!strncmp(name, "ro.", 3))
-        name +=3;
+//    if(!strncmp(name, "ro.", 3))
+//        name +=3;
 
     for (i = 0; property_perms[i].prefix; i++) {
         int tmp;
