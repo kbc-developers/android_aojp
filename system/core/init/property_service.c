@@ -49,6 +49,8 @@
 
 #define PERSISTENT_PROPERTY_DIR  "/data/property"
 
+#define KBC_SUPPORT_PROP "ro.kbc.propsupport"
+
 static int persistent_properties_loaded = 0;
 static int property_area_inited = 0;
 
@@ -260,6 +262,8 @@ static int check_perms(const char *name, unsigned int uid, unsigned int gid)
     return 0;
 }
 
+
+
 const char* property_get(const char *name)
 {
     prop_info *pi;
@@ -314,6 +318,8 @@ int property_set(const char *name, const char *value)
     if(pi != 0) {
         /* ro.* properties may NEVER be modified once set */
         //if(!strncmp(name, "ro.", 3)) return -1;
+		if(!strncmp(name, KBC_SUPPORT_PROP, strlen(KBC_SUPPORT_PROP))) return -1;
+
 
         pa = __system_property_area__;
         update_prop_info(pi, value, valuelen);
@@ -542,6 +548,8 @@ void load_persist_props(void)
 void start_property_service(void)
 {
     int fd;
+
+	property_set(KBC_SUPPORT_PROP, "1");
 
     load_properties_from_file(PROP_PATH_SYSTEM_BUILD);
     load_properties_from_file(PROP_PATH_SYSTEM_DEFAULT);
