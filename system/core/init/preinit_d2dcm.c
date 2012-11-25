@@ -112,8 +112,8 @@ void preinit(void)
         setup_ext4sd();
     }
 
-    mount_partition(PART_NO_DATA, PATH_DATA);
-    setup_tweak_props(PATH_DATA"/tweakgs3.prop");
-    umount_partition(PART_NO_DATA, PATH_DATA);
+    //mount_partition(PART_NO_DATA, PATH_DATA);
+    //setup_tweak_props(PATH_DATA"/tweakgs3.prop");
+    //umount_partition(PART_NO_DATA, PATH_DATA);
 }
 

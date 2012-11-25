@@ -144,7 +144,7 @@ void setup_tweak_props(const char* prop_file_path)
     char buf[300];
     int put_usb_config = 0;
     int i;
-
+#if 0
     FILE* fp = fopen(prop_file_path, "r");
     if (fp == NULL) {
         ERROR("%s is not found.\n", prop_file_path);
@@ -159,7 +159,7 @@ void setup_tweak_props(const char* prop_file_path)
         }
         i = strlen(value);
         value[i > 0 ? i - 1 : 0] = '\0';
-        
+        ERROR("key=%s value=%s\n", key, value);
         if (strcmp("ro.sys.usb.config", key) == 0) {
             put_usb_config = 1;
             property_set("persist.sys.usb.config", value);
@@ -171,8 +171,8 @@ void setup_tweak_props(const char* prop_file_path)
     if (put_usb_config == 0) {
         property_set("persist.sys.usb.config", "mtp,adb");
     }
-
     fclose(fp);
+#endif
 }
 
 void setup_ext4sd(void)
