@@ -40,19 +40,11 @@ import com.android.internal.widget.ActionBarContextView;
 import com.android.internal.widget.ActionBarView;
 
 import android.app.KeyguardManager;
-import android.content.ComponentName;
-import android.content.ContentResolver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.database.ContentObserver;
 import android.graphics.Canvas;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
@@ -61,15 +53,11 @@ import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
-import android.os.Message;
-import android.os.Messenger;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.os.SystemProperties;
-import android.provider.Settings;
 import android.util.AndroidRuntimeException;
 import android.util.DisplayMetrics;
 import android.util.EventLog;
@@ -78,8 +66,6 @@ import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.ActionMode;
 import android.view.ContextThemeWrapper;
-import android.view.GestureDetector;
-import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.Gravity;
 import android.view.IRotationWatcher;
 import android.view.IWindowManager;
@@ -107,12 +93,9 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-
-import com.android.internal.statusbar.IStatusBarService;
 
 /**
  * Android-specific Window.
@@ -198,8 +181,7 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
     private int mTitleColor = 0;
 
     private boolean mAlwaysReadCloseOnTouchAttr = false;
-
-    private Context mContext;
+    
     private ContextMenuBuilder mContextMenu;
     private MenuDialogHelper mContextMenuHelper;
     private boolean mClosingActionMenu;
@@ -217,6 +199,20 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
     private final int mScreenSimpleResId;
     private final int mScreenTitleResId;
     private final int mScreenTitleIconResId;
+
+    private boolean mInvalidatePanelMenuPosted;
+    private int mInvalidatePanelMenuFeatures;
+    private final Runnable mInvalidatePanelMenuRunnable = new Runnable() {
+        @Override public void run() {
+            for (int i = 0; i <= FEATURE_MAX; i++) {
+                if ((mInvalidatePanelMenuFeatures & 1 << i) != 0) {
+                    doInvalidatePanelMenu(i);
+                }
+            }
+            mInvalidatePanelMenuPosted = false;
+            mInvalidatePanelMenuFeatures = 0;
+        }
+    };
 
     static class WindowManagerHolder {
         static final IWindowManager sWindowManager = IWindowManager.Stub.asInterface(
@@ -245,7 +241,6 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
             mScreenTitleResId = com.android.internal.R.layout.screen_title;
             mScreenTitleIconResId = com.android.internal.R.layout.screen_title_icons;
         }
-        mContext = context;
         mLayoutInflater = LayoutInflater.from(context);
     }
 
@@ -658,8 +653,7 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams(
                 width, WRAP_CONTENT,
                 st.x, st.y, WindowManager.LayoutParams.TYPE_APPLICATION_ATTACHED_DIALOG,
-                WindowManager.LayoutParams.FLAG_DITHER
-                | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
+                WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
                 | WindowManager.LayoutParams.FLAG_SPLIT_TOUCH,
                 st.decorView.mDefaultOpacity);
 
@@ -768,6 +762,15 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
 
     @Override
     public void invalidatePanelMenu(int featureId) {
+        mInvalidatePanelMenuFeatures |= 1 << featureId;
+
+        if (!mInvalidatePanelMenuPosted && mDecor != null) {
+            mDecor.postOnAnimation(mInvalidatePanelMenuRunnable);
+            mInvalidatePanelMenuPosted = true;
+        }
+    }
+
+    void doInvalidatePanelMenu(int featureId) {
         PanelFeatureState st = getPanelState(featureId, true);
         Bundle savedActionViewStates = null;
         if (st.menu != null) {
@@ -1016,7 +1019,11 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
             if (!mActionBar.isOverflowMenuShowing() || !toggleMenuMode) {
                 if (cb != null && !isDestroyed() && mActionBar.getVisibility() == View.VISIBLE) {
                     final PanelFeatureState st = getPanelState(FEATURE_OPTIONS_PANEL, true);
-                    if (cb.onPreparePanel(FEATURE_OPTIONS_PANEL, st.createdPanelView, st.menu)) {
+
+                    // If we don't have a menu or we're waiting for a full content refresh,
+                    // forget it. This is a lingering event that no longer matters.
+                    if (st.menu != null && !st.refreshMenuContent &&
+                            cb.onPreparePanel(FEATURE_OPTIONS_PANEL, st.createdPanelView, st.menu)) {
                         cb.onMenuOpened(FEATURE_ACTION_BAR, st.menu);
                         mActionBar.showOverflowMenu();
                     }
@@ -1711,7 +1718,9 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
      */
     private void restorePanelState(SparseArray<Parcelable> icicles) {
         PanelFeatureState st;
-        for (int curFeatureId = icicles.size() - 1; curFeatureId >= 0; curFeatureId--) {
+        int curFeatureId;
+        for (int i = icicles.size() - 1; i >= 0; i--) {
+            curFeatureId = icicles.keyAt(i);
             st = getPanelState(curFeatureId, false /* required */);
             if (st == null) {
                 // The panel must not have been required, and is currently not around, skip it
@@ -1829,15 +1838,9 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
         private PopupWindow mActionModePopup;
         private Runnable mShowActionModePopup;
 
-        private SettingsObserver gestureObserver;
-        private Handler mConfigHandler;
-        private boolean mEnableGestures;
-
         public DecorView(Context context, int featureId) {
             super(context);
             mFeatureId = featureId;
-            mConfigHandler = new Handler();
-            gestureObserver = new SettingsObserver(mConfigHandler);
         }
 
         @Override
@@ -1918,270 +1921,8 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
             return false;
         }
 
-        private final StylusGestureFilter mStylusFilter = new StylusGestureFilter();
-
-        private class StylusGestureFilter extends SimpleOnGestureListener {
-
-            private final static int SWIPE_UP = 1;
-            private final static int SWIPE_DOWN = 2;
-            private final static int SWIPE_LEFT = 3;
-            private final static int SWIPE_RIGHT = 4;
-            private final static int PRESS_LONG = 5;
-            private final static int TAP_DOUBLE = 6;
-            private final static double SWIPE_MIN_DISTANCE = 25.0;
-            private final static double SWIPE_MIN_VELOCITY = 50.0;
-            private final static int KEY_NO_ACTION = 1000;
-            private final static int KEY_HOME = 1001;
-            private final static int KEY_BACK = 1002;
-            private final static int KEY_MENU = 1003;
-            private final static int KEY_SEARCH = 1004;
-            private final static int KEY_RECENT = 1005;
-            private final static int KEY_APP = 1006;
-            private GestureDetector mDetector;
-            private final static String TAG = "StylusGestureFilter";
-
-            public StylusGestureFilter() {
-                mDetector = new GestureDetector(this);
-            }
-
-            public boolean onTouchEvent(MotionEvent event) {
-                return mDetector.onTouchEvent(event);
-            }
-
-            @Override
-            public boolean onFling(MotionEvent e1, MotionEvent e2,
-                    float velocityX, float velocityY) {
-
-                final float xDistance = Math.abs(e1.getX() - e2.getX());
-                final float yDistance = Math.abs(e1.getY() - e2.getY());
-
-                velocityX = Math.abs(velocityX);
-                velocityY = Math.abs(velocityY);
-                boolean result = false;
-
-                if (velocityX > (SWIPE_MIN_VELOCITY * getResources().getDisplayMetrics().density)
-                        && xDistance > (SWIPE_MIN_DISTANCE * getResources().getDisplayMetrics().density)
-                        && xDistance > yDistance) {
-                    if (e1.getX() > e2.getX()) { // right to left
-                        // Swipe Left
-                        dispatchStylusAction(SWIPE_LEFT);
-                    } else {
-                        // Swipe Right
-                        dispatchStylusAction(SWIPE_RIGHT);
-                    }
-                    result = true;
-                } else if (velocityY > (SWIPE_MIN_VELOCITY * getResources().getDisplayMetrics().density)
-                        && yDistance > (SWIPE_MIN_DISTANCE * getResources().getDisplayMetrics().density)
-                        && yDistance > xDistance) {
-                    if (e1.getY() > e2.getY()) { // bottom to up
-                        // Swipe Up
-                        dispatchStylusAction(SWIPE_UP);
-                    } else {
-                        // Swipe Down
-                        dispatchStylusAction(SWIPE_DOWN);
-                    }
-                    result = true;
-                }
-                return result;
-            }
-
-            @Override
-            public boolean onDoubleTap(MotionEvent arg0) {
-                dispatchStylusAction(TAP_DOUBLE);
-                return true;
-            }
-
-            public void onLongPress(MotionEvent e) {
-                dispatchStylusAction(PRESS_LONG);
-            }
-
-        }
-
-        private final class SettingsObserver extends ContentObserver {
-            SettingsObserver(Handler handler) {
-                super(handler);
-            }
-
-            void observe() {
-                ContentResolver resolver = mContext.getContentResolver();
-                resolver.registerContentObserver(Settings.System
-                        .getUriFor(Settings.System.ENABLE_STYLUS_GESTURES), false,
-                        this);
-                checkGestures();
-            }
-
-            void unobserve() {
-                ContentResolver resolver = mContext.getContentResolver();
-                resolver.unregisterContentObserver(this);
-            }
-
-            @Override
-            public void onChange(boolean selfChange) {
-                checkGestures();
-            }
-
-            void checkGestures() {
-                mEnableGestures = Settings.System.getInt(
-                        mContext.getContentResolver(),
-                        Settings.System.ENABLE_STYLUS_GESTURES, 0) == 1;
-            }
-        }
-
-        private void menuAction() {
-            dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN,
-                    KeyEvent.KEYCODE_MENU));
-            dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_UP,
-                    KeyEvent.KEYCODE_MENU));
-
-        }
-
-        private void backAction() {
-            dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN,
-                    KeyEvent.KEYCODE_BACK));
-            dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_UP,
-                    KeyEvent.KEYCODE_BACK));
-        }
-
-        private void dispatchStylusAction(int gestureAction) {
-            final ContentResolver resolver = mContext.getContentResolver();
-            boolean flag = false;
-            //flag=true when action is performed on systemui
-            if ("com.android.systemui".equalsIgnoreCase(mContext
-                    .getPackageName())) {
-                flag = true;
-            }
-            String packageName = null;
-            int dispatchAction = -1;
-            switch (gestureAction) {
-            case StylusGestureFilter.SWIPE_LEFT:
-                packageName = Settings.System.getString(resolver,
-                        Settings.System.GESTURES_LEFT_SWIPE);
-                break;
-            case StylusGestureFilter.SWIPE_RIGHT:
-                packageName = Settings.System.getString(resolver,
-                        Settings.System.GESTURES_RIGHT_SWIPE);
-                break;
-            case StylusGestureFilter.SWIPE_UP:
-                packageName = Settings.System.getString(resolver,
-                        Settings.System.GESTURES_UP_SWIPE);
-                break;
-            case StylusGestureFilter.SWIPE_DOWN:
-                packageName = Settings.System.getString(resolver,
-                        Settings.System.GESTURES_DOWN_SWIPE);
-                break;
-            case StylusGestureFilter.TAP_DOUBLE:
-                packageName = Settings.System.getString(resolver,
-                        Settings.System.GESTURES_DOUBLE_TAP);
-                break;
-            case StylusGestureFilter.PRESS_LONG:
-                packageName = Settings.System.getString(resolver,
-                        Settings.System.GESTURES_LONG_PRESS);
-                break;
-            }
-            if (packageName != null) {
-                if (String.valueOf(StylusGestureFilter.KEY_HOME)
-                        .equalsIgnoreCase(packageName)) {
-                    dispatchAction = StylusGestureFilter.KEY_HOME;
-                } else if (String.valueOf(StylusGestureFilter.KEY_BACK)
-                        .equalsIgnoreCase(packageName)) {
-                    dispatchAction = StylusGestureFilter.KEY_BACK;
-                } else if (String.valueOf(StylusGestureFilter.KEY_MENU)
-                        .equalsIgnoreCase(packageName)) {
-                    dispatchAction = StylusGestureFilter.KEY_MENU;
-                } else if (String.valueOf(StylusGestureFilter.KEY_SEARCH)
-                        .equalsIgnoreCase(packageName)) {
-                    dispatchAction = StylusGestureFilter.KEY_SEARCH;
-                } else if (String.valueOf(StylusGestureFilter.KEY_RECENT)
-                        .equalsIgnoreCase(packageName)) {
-                    dispatchAction = StylusGestureFilter.KEY_RECENT;
-                } else if (String.valueOf(StylusGestureFilter.KEY_NO_ACTION)
-                        .equalsIgnoreCase(packageName)) {
-                    return;
-                } else {
-                    dispatchAction = StylusGestureFilter.KEY_APP;
-                }
-            } else {
-                return;
-            }
-            // Dispatching action
-            switch (dispatchAction) {
-            case StylusGestureFilter.KEY_HOME:
-                Intent homeIntent = new Intent(Intent.ACTION_MAIN);
-                homeIntent.addCategory(Intent.CATEGORY_HOME);
-                homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                mContext.startActivity(homeIntent);
-                break;
-            case StylusGestureFilter.KEY_BACK:
-                backAction();
-                break;
-            case StylusGestureFilter.KEY_MENU:
-                // Menu action on notificationbar / systemui will be converted
-                // to back action
-                if (flag) {
-                    backAction();
-                    break;
-                }
-                menuAction();
-                break;
-            case StylusGestureFilter.KEY_SEARCH:
-                // Search action on notificationbar / systemui will be converted
-                // to back action
-                if (flag) {
-                    backAction();
-                    break;
-                }
-                launchDefaultSearch();
-                break;
-            case StylusGestureFilter.KEY_RECENT:
-                IStatusBarService mStatusBarService = IStatusBarService.Stub
-                        .asInterface(ServiceManager.getService("statusbar"));
-                try {
-                    mStatusBarService.toggleRecentApps();
-                } catch (RemoteException e) {
-                }
-                break;
-            case StylusGestureFilter.KEY_APP:
-                // Launching app on notificationbar / systemui will be preceded
-                // with a back Action
-                if (flag) {
-                    backAction();
-                }
-                String name = getAppName(packageName);
-                if (name == null) {
-                    Toast.makeText(mContext, packageName + " is not installed",
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                Intent LaunchIntent = mContext.getPackageManager()
-                        .getLaunchIntentForPackage(packageName);
-                mContext.startActivity(LaunchIntent);
-                break;
-            }
-
-        }
-
-        private String getAppName(String packageName) {
-            final PackageManager pm = mContext.getPackageManager();
-            ApplicationInfo ai;
-            try {
-                ai = pm.getApplicationInfo(packageName, 0);
-            } catch (final NameNotFoundException e) {
-                ai = null;
-            }
-            String applicationName = (String) (ai != null ? pm
-                    .getApplicationLabel(ai) : null);
-            return applicationName;
-        }
-
         @Override
         public boolean dispatchTouchEvent(MotionEvent ev) {
-            // Stylus events with side button pressed are filtered and other
-            // events are processed normally.
-            if (mEnableGestures
-                    && MotionEvent.BUTTON_SECONDARY == ev.getButtonState()) {
-                mStylusFilter.onTouchEvent(ev);
-                return false;
-            }
             final Callback cb = getCallback();
             return cb != null && !isDestroyed() && mFeatureId < 0 ? cb.dispatchTouchEvent(ev)
                     : super.dispatchTouchEvent(ev);
@@ -2749,8 +2490,6 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
             
             updateWindowResizeState();
             
-            gestureObserver.observe();
-
             final Callback cb = getCallback();
             if (cb != null && !isDestroyed() && mFeatureId < 0) {
                 cb.onAttachedToWindow();
@@ -2772,8 +2511,6 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
         protected void onDetachedFromWindow() {
             super.onDetachedFromWindow();
             
-            gestureObserver.unobserve();
-
             final Callback cb = getCallback();
             if (cb != null && mFeatureId < 0) {
                 cb.onDetachedFromWindow();
@@ -3156,6 +2893,9 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
             mDecor = generateDecor();
             mDecor.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
             mDecor.setIsRootNamespace(true);
+            if (!mInvalidatePanelMenuPosted && mInvalidatePanelMenuFeatures != 0) {
+                mDecor.postOnAnimation(mInvalidatePanelMenuRunnable);
+            }
         }
         if (mContentParent == null) {
             mContentParent = generateLayout(mDecor);
@@ -3165,6 +2905,7 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
 
             mTitleView = (TextView)findViewById(com.android.internal.R.id.title);
             if (mTitleView != null) {
+                mTitleView.setLayoutDirection(mDecor.getLayoutDirection());
                 if ((getLocalFeatures() & (1 << FEATURE_NO_TITLE)) != 0) {
                     View titleContainer = findViewById(com.android.internal.R.id.title_container);
                     if (titleContainer != null) {

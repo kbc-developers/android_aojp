@@ -43,9 +43,15 @@ int main(int argc, char** argv)
 #endif
 
     char value[PROPERTY_VALUE_MAX];
-    property_get("persist.sys.nobootanimation", value, "0");
+    property_get("debug.sf.nobootanimation", value, "0");
     int noBootAnimation = atoi(value);
     ALOGI_IF(noBootAnimation,  "boot animation disabled");
+
+    if (noBootAnimation == 0) {
+        property_get("persist.sys.nobootanimation", value, "0");
+        noBootAnimation = atoi(value);
+        ALOGI_IF(noBootAnimation,  "boot animation disabled");
+    }
 
     property_get("persist.sys.nobootanimationwait", value, "0");
     int noBootAnimationWait = atoi(value);
@@ -93,7 +99,7 @@ int main(int argc, char** argv)
 
     if (!noBootAnimation) {
 
-        seteuid(1003);
+        seteuid(AID_GRAPHICS);
 
         sp<ProcessState> proc(ProcessState::self());
         ProcessState::self()->startThreadPool();
@@ -108,7 +114,7 @@ int main(int argc, char** argv)
 
         IPCThreadState::self()->joinThreadPool();
 
-        seteuid(0);
+        seteuid(AID_ROOT);
         ALOGI("[BOOT] set sys.bootanim_completed");
         property_set("sys.bootanim_completed", "1");
     }

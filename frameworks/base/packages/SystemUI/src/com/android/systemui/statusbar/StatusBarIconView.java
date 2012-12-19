@@ -27,6 +27,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.Handler;
+import android.os.UserHandle;
 import android.os.SystemProperties;
 import android.provider.Settings;
 import android.text.TextUtils;
@@ -75,7 +76,6 @@ public class StatusBarIconView extends AnimatedImageView {
 
         SettingsObserver observer = new SettingsObserver(new Handler());
         observer.observe();
-
         // We do not resize and scale system icons (on the right), only notification icons (on the
         // left).
         if (notification != null) {
@@ -124,7 +124,6 @@ public class StatusBarIconView extends AnimatedImageView {
         return a.equals(b);
     }
 
-    
     /**
      * Returns whether the set succeeded.
      */
@@ -192,7 +191,12 @@ public class StatusBarIconView extends AnimatedImageView {
 
         if (icon.iconPackage != null) {
             try {
-                r = context.getPackageManager().getResourcesForApplication(icon.iconPackage);
+                int userId = icon.user.getIdentifier();
+                if (userId == UserHandle.USER_ALL) {
+                    userId = UserHandle.USER_OWNER;
+                }
+                r = context.getPackageManager()
+                        .getResourcesForApplicationAsUser(icon.iconPackage, userId);
             } catch (PackageManager.NameNotFoundException ex) {
                 Slog.e(TAG, "Icon package not found: " + icon.iconPackage);
                 return null;
@@ -324,5 +328,4 @@ public class StatusBarIconView extends AnimatedImageView {
             set(mIcon, true);
         }
     }
-
 }

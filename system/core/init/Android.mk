@@ -15,7 +15,8 @@ LOCAL_SRC_FILES:= \
 	signal_handler.c \
 	init_parser.c \
 	ueventd.c \
-	ueventd_parser.c
+	ueventd_parser.c \
+	watchdogd.c
 
 ifeq ($(TARGET_PRODUCT), cm_d2dcm)
 LOCAL_SRC_FILES += preinit.c
@@ -37,6 +38,10 @@ endif
 
 ifneq ($(TARGET_NR_SVC_SUPP_GIDS),)
 LOCAL_CFLAGS += -DNR_SVC_SUPP_GIDS=$(TARGET_NR_SVC_SUPP_GIDS)
+endif
+
+ifeq ($(BOARD_WANTS_EMMC_BOOT),true)
+LOCAL_CFLAGS += -DWANTS_EMMC_BOOT
 endif
 
 SYSTEM_CORE_INIT_DEFINES := BOARD_CHARGING_MODE_BOOTING_LPM
@@ -63,8 +68,11 @@ endif
 
 include $(BUILD_EXECUTABLE)
 
-# Make a symlink from /sbin/ueventd to /init
-SYMLINKS := $(TARGET_ROOT_OUT)/sbin/ueventd
+# Make a symlink from /sbin/ueventd and /sbin/watchdogd to /init
+SYMLINKS := \
+	$(TARGET_ROOT_OUT)/sbin/ueventd \
+	$(TARGET_ROOT_OUT)/sbin/watchdogd
+
 $(SYMLINKS): INIT_BINARY := $(LOCAL_MODULE)
 $(SYMLINKS): $(LOCAL_INSTALLED_MODULE) $(LOCAL_PATH)/Android.mk
 	@echo "Symlink: $@ -> ../$(INIT_BINARY)"

@@ -20,6 +20,8 @@
 #include <stdint.h>
 #include <sys/types.h>
 
+#include <private/android_filesystem_config.h>
+
 #include <androidfw/AssetManager.h>
 #include <utils/threads.h>
 

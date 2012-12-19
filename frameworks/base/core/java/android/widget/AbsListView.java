@@ -41,7 +41,6 @@ import android.util.SparseBooleanArray;
 import android.util.StateSet;
 import android.view.ActionMode;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.FocusFinder;
 import android.view.Gravity;
 import android.view.HapticFeedbackConstants;
 import android.view.InputDevice;
@@ -67,6 +66,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputConnectionWrapper;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.RemoteViews.OnClickHandler;
 
 import com.android.internal.R;
 
@@ -583,7 +583,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
     Runnable mPositionScrollAfterLayout;
     private int mMinimumVelocity;
     private int mMaximumVelocity;
-    private int mDecacheThreshold;
     private float mVelocityScale = 1.0f;
 
     final boolean[] mIsScrap = new boolean[1];
@@ -677,6 +676,14 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
      * Used for smooth scrolling at a consistent rate
      */
     static final Interpolator sLinearInterpolator = new LinearInterpolator();
+
+    /**
+     * The saved state that we will be restoring from when we next sync.
+     * Kept here so that if we happen to be asked to save our state before
+     * the sync happens, we can return this existing data rather than losing
+     * it.
+     */
+    private SavedState mPendingSync;
 
     /**
      * Interface definition for a callback to be invoked when the list or grid
@@ -817,7 +824,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         mTouchSlop = configuration.getScaledTouchSlop();
         mMinimumVelocity = configuration.getScaledMinimumFlingVelocity();
         mMaximumVelocity = configuration.getScaledMaximumFlingVelocity();
-        mDecacheThreshold = mMaximumVelocity / 2;
         mOverscrollDistance = configuration.getScaledOverscrollDistance();
         mOverflingDistance = configuration.getScaledOverflingDistance();
 
@@ -982,6 +988,12 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
 
         // Start selection mode if needed. We don't need to if we're unchecking something.
         if (value && mChoiceMode == CHOICE_MODE_MULTIPLE_MODAL && mChoiceActionMode == null) {
+            if (mMultiChoiceModeCallback == null ||
+                    !mMultiChoiceModeCallback.hasWrappedCallback()) {
+                throw new IllegalStateException("AbsListView: attempted to start selection mode " +
+                        "for CHOICE_MODE_MULTIPLE_MODAL but no choice mode callback was " +
+                        "supplied. Call setMultiChoiceModeListener to set a callback.");
+            }
             mChoiceActionMode = startActionMode(mMultiChoiceModeCallback);
         }
 
@@ -1049,29 +1061,29 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
 
             if (mChoiceMode == CHOICE_MODE_MULTIPLE ||
                     (mChoiceMode == CHOICE_MODE_MULTIPLE_MODAL && mChoiceActionMode != null)) {
-                boolean newValue = !mCheckStates.get(position, false);
-                mCheckStates.put(position, newValue);
+                boolean checked = !mCheckStates.get(position, false);
+                mCheckStates.put(position, checked);
                 if (mCheckedIdStates != null && mAdapter.hasStableIds()) {
-                    if (newValue) {
+                    if (checked) {
                         mCheckedIdStates.put(mAdapter.getItemId(position), position);
                     } else {
                         mCheckedIdStates.delete(mAdapter.getItemId(position));
                     }
                 }
-                if (newValue) {
+                if (checked) {
                     mCheckedItemCount++;
                 } else {
                     mCheckedItemCount--;
                 }
                 if (mChoiceActionMode != null) {
                     mMultiChoiceModeCallback.onItemCheckedStateChanged(mChoiceActionMode,
-                            position, id, newValue);
+                            position, id, checked);
                     dispatchItemClick = false;
                 }
                 checkedStateChanged = true;
             } else if (mChoiceMode == CHOICE_MODE_SINGLE) {
-                boolean newValue = !mCheckStates.get(position, false);
-                if (newValue) {
+                boolean checked = !mCheckStates.get(position, false);
+                if (checked) {
                     mCheckStates.clear();
                     mCheckStates.put(position, true);
                     if (mCheckedIdStates != null && mAdapter.hasStableIds()) {
@@ -1334,150 +1346,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
             mOnScrollListener.onScroll(this, mFirstPosition, getChildCount(), mItemCount);
         }
         onScrollChanged(0, 0, 0, 0); // dummy values, View's implementation does not use these.
-    }
-
-    @Override
-    public void addFocusables(ArrayList<View> views, int direction, int focusableMode) {
-        if ((focusableMode & FOCUSABLES_ACCESSIBILITY) == FOCUSABLES_ACCESSIBILITY) {
-            switch(direction) {
-                case ACCESSIBILITY_FOCUS_BACKWARD: {
-                    View focusable = (getChildCount() > 0) ? getChildAt(getChildCount() - 1) : this;
-                    if (focusable.isAccessibilityFocusable()) {
-                        views.add(focusable);
-                    }
-                } return;
-                case ACCESSIBILITY_FOCUS_FORWARD: {
-                    if (isAccessibilityFocusable()) {
-                        views.add(this);
-                    }
-                } return;
-            }
-        }
-        super.addFocusables(views, direction, focusableMode);
-    }
-
-    @Override
-    public View focusSearch(int direction) {
-        return focusSearch(this, direction);
-    }
-
-    @Override
-    public View focusSearch(View focused, int direction) {
-        switch (direction) {
-            case ACCESSIBILITY_FOCUS_FORWARD: {
-                // If we are the focused view try giving it to the first child.
-                if (focused == this) {
-                    final int childCount = getChildCount();
-                    for (int i = 0; i < childCount; i++) {
-                        View child = getChildAt(i);
-                        if (child.getVisibility() == View.VISIBLE) {
-                            return child;
-                        }
-                    }
-                    return super.focusSearch(this, direction);
-                }
-                // Find the item that has the focused view.
-                final int currentPosition = getPositionForView(focused);
-                if (currentPosition < 0 || currentPosition >= getCount()) {
-                    return super.focusSearch(this, direction);
-                }
-                // Try to advance focus in the current item.
-                View currentItem = getChildAt(currentPosition - getFirstVisiblePosition());
-                if (currentItem.getVisibility() == View.VISIBLE) {
-                    if (currentItem instanceof ViewGroup) {
-                        ViewGroup currentItemGroup = (ViewGroup) currentItem;
-                        View nextFocus = FocusFinder.getInstance().findNextFocus(currentItemGroup,
-                                    focused, direction);
-                        if (nextFocus != null && nextFocus != currentItemGroup
-                                && nextFocus != focused) {
-                            return nextFocus;
-                        }
-                    }
-                }
-                // Try to move focus to the next item.
-                final int nextPosition = currentPosition - getFirstVisiblePosition() + 1;
-                for (int i = nextPosition; i < getChildCount(); i++) {
-                    View child = getChildAt(i);
-                    if (child.getVisibility() == View.VISIBLE) {
-                        return child;
-                    }
-                }
-                // No next item start searching from the list.
-                return super.focusSearch(this, direction);
-            }
-            case ACCESSIBILITY_FOCUS_BACKWARD: {
-                // If we are the focused search from the view that is
-                // as closer to the bottom as possible.
-                if (focused == this) {
-                    final int childCount = getChildCount();
-                    for (int i = childCount - 1; i >= 0; i--) {
-                        View child = getChildAt(i);
-                        if (child.getVisibility() == View.VISIBLE) {
-                            return super.focusSearch(child, direction);
-                        }
-                    }
-                    return super.focusSearch(this, direction);
-                }
-                // Find the item that has the focused view.
-                final int currentPosition = getPositionForView(focused);
-                if (currentPosition < 0 || currentPosition >= getCount()) {
-                    return super.focusSearch(this, direction);
-                }
-
-                View currentItem = getChildAt(currentPosition - getFirstVisiblePosition());
-
-                // If a list item is the focused view we try to find a view
-                // in the previous item since in reverse the item contents
-                // get accessibility focus before the item itself.
-                if (currentItem == focused) {
-                    currentItem = null;
-                    focused = null;
-                    // This list gets accessibility focus after the last item.
-                    final int previousPosition = currentPosition - getFirstVisiblePosition() - 1;
-                    for (int i = previousPosition; i >= 0; i--) {
-                        View child = getChildAt(i);
-                        if (child.getVisibility() == View.VISIBLE) {
-                            currentItem = child;
-                            break;
-                        }
-                    }
-                    if (currentItem == null) {
-                        return this;
-                    }
-                }
-
-                if (currentItem.getVisibility() == View.VISIBLE) {
-                    // Search into the item.
-                    if (currentItem instanceof ViewGroup) {
-                        ViewGroup currentItemGroup = (ViewGroup) currentItem;
-                        View nextFocus = FocusFinder.getInstance().findNextFocus(currentItemGroup,
-                                    focused, direction);
-                        if (nextFocus != null && nextFocus != currentItemGroup
-                                && nextFocus != focused) {
-                            return nextFocus;
-                        }
-                    }
-
-                    // If not item content wants focus we give it to the item.
-                    return currentItem;
-                }
-
-                return super.focusSearch(this, direction);
-            }
-        }
-        return super.focusSearch(focused, direction);
-    }
-
-    /**
-     * @hide
-     */
-    @Override
-    public View findViewToTakeAccessibilityFocusFromHover(View child, View descendant) {
-        final int position = getPositionForView(child);
-        if (position != INVALID_POSITION) {
-            return getChildAt(position - mFirstPosition);
-        }
-        return super.findViewToTakeAccessibilityFocusFromHover(child, descendant);
     }
 
     @Override
@@ -1759,6 +1627,21 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
 
         SavedState ss = new SavedState(superState);
 
+        if (mPendingSync != null) {
+            // Just keep what we last restored.
+            ss.selectedId = mPendingSync.selectedId;
+            ss.firstId = mPendingSync.firstId;
+            ss.viewTop = mPendingSync.viewTop;
+            ss.position = mPendingSync.position;
+            ss.height = mPendingSync.height;
+            ss.filter = mPendingSync.filter;
+            ss.inActionMode = mPendingSync.inActionMode;
+            ss.checkedItemCount = mPendingSync.checkedItemCount;
+            ss.checkState = mPendingSync.checkState;
+            ss.checkIdState = mPendingSync.checkIdState;
+            return ss;
+        }
+
         boolean haveChildren = getChildCount() > 0 && mItemCount > 0;
         long selectedId = getSelectedItemId();
         ss.selectedId = selectedId;
@@ -1839,6 +1722,7 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
 
         if (ss.selectedId >= 0) {
             mNeedSync = true;
+            mPendingSync = ss;
             mSyncRowId = ss.selectedId;
             mSyncPosition = ss.position;
             mSpecificTop = ss.viewTop;
@@ -1849,6 +1733,7 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
             setNextSelectedPositionInt(INVALID_POSITION);
             mSelectorPosition = INVALID_POSITION;
             mNeedSync = true;
+            mPendingSync = ss;
             mSyncRowId = ss.firstId;
             mSyncPosition = ss.position;
             mSpecificTop = ss.viewTop;
@@ -1950,6 +1835,7 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         mDataChanged = false;
         mPositionScrollAfterLayout = null;
         mNeedSync = false;
+        mPendingSync = null;
         mOldSelectedPosition = INVALID_POSITION;
         mOldSelectedRowId = INVALID_ROW_ID;
         setSelectedPositionInt(INVALID_POSITION);
@@ -2305,7 +2191,9 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
             if (mAccessibilityDelegate == null) {
                 mAccessibilityDelegate = new ListItemAccessibilityDelegate();
             }
-            child.setAccessibilityDelegate(mAccessibilityDelegate);
+            if (child.getAccessibilityDelegate() == null) {
+                child.setAccessibilityDelegate(mAccessibilityDelegate);
+            }
         }
 
         return child;
@@ -4039,7 +3927,7 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
                     // Keep the fling alive a little longer
                     postDelayed(this, FLYWHEEL_TIMEOUT);
                 } else {
-                    endFling(false); // Don't disable the scrolling cache right after it was enabled
+                    endFling();
                     mTouchMode = TOUCH_MODE_SCROLL;
                     reportScrollStateChange(OnScrollListener.SCROLL_STATE_TOUCH_SCROLL);
                 }
@@ -4053,11 +3941,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
 
         void start(int initialVelocity) {
-            if (Math.abs(initialVelocity) > mDecacheThreshold) {
-                // For long flings, scrolling cache causes stutter, so don't use it
-                clearScrollingCache();
-            }
-
             int initialY = initialVelocity < 0 ? Integer.MAX_VALUE : 0;
             mLastFlingY = initialY;
             mScroller.setInterpolator(null);
@@ -4130,18 +4013,13 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
 
         void endFling() {
-            endFling(true);
-        }
-
-        void endFling(boolean clearCache) {
             mTouchMode = TOUCH_MODE_REST;
 
             removeCallbacks(this);
             removeCallbacks(mCheckFlywheel);
 
             reportScrollStateChange(OnScrollListener.SCROLL_STATE_IDLE);
-            if (clearCache)
-                clearScrollingCache();
+            clearScrollingCache();
             mScroller.abortAnimation();
 
             if (mFlingStrictSpan != null) {
@@ -5364,6 +5242,7 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
             if (mNeedSync) {
                 // Update this first, since setNextSelectedPositionInt inspects it
                 mNeedSync = false;
+                mPendingSync = null;
 
                 if (mTranscriptMode == TRANSCRIPT_MODE_ALWAYS_SCROLL) {
                     mLayoutMode = LAYOUT_FORCE_BOTTOM;
@@ -5479,6 +5358,7 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         mNextSelectedPosition = INVALID_POSITION;
         mNextSelectedRowId = INVALID_ROW_ID;
         mNeedSync = false;
+        mPendingSync = null;
         mSelectorPosition = INVALID_POSITION;
         checkSelectionChanged();
     }
@@ -6002,6 +5882,21 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
     }
 
     /**
+     * Sets up the onClickHandler to be used by the RemoteViewsAdapter when inflating RemoteViews
+     * 
+     * @param handler The OnClickHandler to use when inflating RemoteViews.
+     * 
+     * @hide
+     */
+    public void setRemoteViewsOnClickHandler(OnClickHandler handler) {
+        // Ensure that we don't already have a RemoteViewsAdapter that is bound to an existing
+        // service handling the specified intent.
+        if (mRemoteAdapter != null) {
+            mRemoteAdapter.setRemoteViewsOnClickHandler(handler);
+        }
+    }
+
+    /**
      * This defers a notifyDataSetChanged on the pending RemoteViewsAdapter if it has not
      * connected yet.
      */
@@ -6106,6 +6001,10 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
 
         public void setWrapped(MultiChoiceModeListener wrapped) {
             mWrapped = wrapped;
+        }
+
+        public boolean hasWrappedCallback() {
+            return mWrapped != null;
         }
 
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
