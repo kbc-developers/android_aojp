@@ -54,7 +54,9 @@
 
 #define PERSISTENT_PROPERTY_DIR  "/data/property"
 
-#define KBC_SUPPORT_PROP "ro.kbc.propsupport"
+#define KBC_PROP_SUPPORT "ro.kbc.propsupport"
+#define KBC_PROP_WRITABLE "ro.kbc.propwritable"
+static int kbc_prop_writable = 0;
 
 static int persistent_properties_loaded = 0;
 static int property_area_inited = 0;
@@ -373,13 +375,21 @@ int property_set(const char *name, const char *value)
     if(valuelen >= PROP_VALUE_MAX) return -1;
     if(namelen < 1) return -1;
 
+    if (!strncmp(name, KBC_PROP_WRITABLE, strlen(KBC_PROP_WRITABLE))) {
+        kbc_prop_writable = (value[0] == '1') ? 1 : 0;
+        ERROR("DBG:property_set name=%s value=%s", name, value);
+        return 0;
+    }
+
     pi = (prop_info*) __system_property_find(name);
 
     if(pi != 0) {
         /* ro.* properties may NEVER be modified once set */
         //if(!strncmp(name, "ro.", 3)) return -1;
-		if(!strncmp(name, KBC_SUPPORT_PROP, strlen(KBC_SUPPORT_PROP))) return -1;
+        if(!strncmp(name, "ro.", 3) && !kbc_prop_writable) return -1;
+        if(!strncmp(name, KBC_PROP_SUPPORT, strlen(KBC_PROP_SUPPORT))) return -1;
 
+        ERROR("DBG:property_set name=%s value=%s", name, value);
 
         pa = __system_property_area__;
         update_prop_info(pi, value, valuelen);
@@ -631,7 +641,7 @@ void start_property_service(void)
 {
     int fd;
 
-	property_set(KBC_SUPPORT_PROP, "1");
+    property_set(KBC_PROP_SUPPORT, "1");
 
     load_properties_from_file(PROP_PATH_SYSTEM_BUILD);
     load_properties_from_file(PROP_PATH_SYSTEM_DEFAULT);
