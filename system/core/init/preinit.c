@@ -43,7 +43,7 @@ static const rom_info const samsung_jb_info = {
 
 static const file_info const aosp_jb_file_list[] = {
     { "/fstab.qcom", 0640, AID_ROOT, AID_ROOT },
-    { "/init.bt.rc", 0750, AID_ROOT, AID_ROOT },
+    { "/init.cm.rc", 0750, AID_ROOT, AID_ROOT },
     { "/init.qcom.class_core.sh", 0750, AID_ROOT, AID_ROOT },
     { "/init.qcom.class_main.sh", 0750, AID_ROOT, AID_ROOT },
     { "/init.qcom.early_boot.sh", 0750, AID_ROOT, AID_ROOT },
@@ -319,8 +319,8 @@ void preinit(void)
         setup_ext4sd();
     }
 
-    mount_partition(PART_NO_DATA);
-    setup_tweak_props();
-    umount_partition(PART_NO_DATA);
+//    mount_partition(PART_NO_DATA);
+//    setup_tweak_props();
+//    umount_partition(PART_NO_DATA);
 }
 

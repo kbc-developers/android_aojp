@@ -647,6 +647,11 @@ static void import_kernel_nv(char *name, int for_emulator)
         return;
     }
 
+#ifdef TARGET_DEVICE_SC05D
+    // workaround: force emmc boot
+    emmc_boot = 1;
+#endif
+
     if (!strcmp(name,"qemu")) {
         strlcpy(qemu, value, sizeof(qemu));
 #ifdef WANTS_EMMC_BOOT

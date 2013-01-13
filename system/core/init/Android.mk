@@ -23,6 +23,10 @@ LOCAL_SRC_FILES += preinit.c
 LOCAL_CFLAGS += -DTARGET_DEVICE_SC06D
 endif
 
+ifeq ($(TARGET_PRODUCT), cm_quincydcm)
+LOCAL_CFLAGS += -DTARGET_DEVICE_SC05D
+endif
+
 ifeq ($(strip $(INIT_BOOTCHART)),true)
 LOCAL_SRC_FILES += bootchart.c
 LOCAL_CFLAGS    += -DBOOTCHART=1
