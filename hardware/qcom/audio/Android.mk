@@ -1,3 +1,4 @@
+ifeq ($(TARGET_QCOM_AUDIO_VARIANT),)
 ifneq ($(TARGET_PROVIDES_LIBAUDIO),true)
 ifneq ($(BOARD_USES_AUDIO_LEGACY),true)
 ifeq ($(BOARD_USES_QCOM_HARDWARE),true)
@@ -22,6 +23,7 @@ endif
 #    include $(AUDIO_HW_ROOT)/mm-audio/Android.mk
 #endif
 
+endif
 endif
 endif
 endif
