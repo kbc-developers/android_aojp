@@ -560,7 +560,7 @@ audio_io_handle_t AudioPolicyManagerBase::getOutput(AudioSystem::stream_type str
                                             format,
                                             channelMask,
                                             (audio_output_flags_t)flags);
-#if 0 // quincydcm: workaround don't use direct output
+#ifndef TARGET_DEVICE_SC05D // quincydcm: workaround don't use direct output
     if (profile != NULL) {
 
         ALOGV("getOutput() opening direct output device %x", device);
