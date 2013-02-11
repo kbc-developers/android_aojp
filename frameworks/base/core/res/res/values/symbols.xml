@@ -1845,6 +1845,7 @@
   <java-symbol type="string" name="config_legacyUmsLunFile" />
   <java-symbol type="bool" name="config_hasRemovableLid" />
   <java-symbol type="bool" name="config_hasDockBattery" />
+  <java-symbol type="bool" name="config_noDelayInATwoDP" />
 
   <!-- Telephony -->
   <java-symbol type="bool" name="config_smsSamsungCdmaAlternateMessageIDEncoding" />
@@ -1893,6 +1894,7 @@
 
   <!-- Lockscreen -->
   <java-symbol type="bool" name="config_disableHomeUnlockSetting" />
+  <java-symbol type="id" name="expand_challenge_handle" />
   <!-- Lock screen always show battery -->
   <java-symbol type="string" name="lockscreen_discharging" />
 
@@ -1902,4 +1904,10 @@
 
   <!-- Wifi -->
   <java-symbol type="bool" name="config_wifiApStartInterface" />
+  <java-symbol type="bool" name="config_wifiApFirmwareReload" />
+
+  <!-- Device specific handlers -->
+  <java-symbol type="string" name="config_deviceHandlersLib" />
+  <java-symbol type="string" name="config_deviceKeyHandlerClass" />
+  <java-symbol type="string" name="config_deviceDockBatteryHandlerClass" />
 </resources>
