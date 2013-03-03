@@ -274,14 +274,19 @@ set_light_buttons(struct light_device_t* dev,
 #ifdef EXYNOS4210_TABLET
     return 0;
 #else
+    int err = 0;
+    int brightness = rgb_to_brightness(state);
 
     load_settings();
 
-    int err = 0;
-
     pthread_mutex_lock(&g_lock);
+    if (brightness > 0) {
     ALOGD("set_light_button on=%d\n", g_enable_touchlight ? LIGHT_ON : LIGHT_OFF);
     err = write_int(BUTTON_FILE, g_enable_touchlight ? LIGHT_ON : LIGHT_OFF);
+    } else {
+        ALOGD("set_light_buttons off\n");
+        err = write_int(BUTTON_FILE, LIGHT_OFF);
+    }
     pthread_mutex_unlock(&g_lock);
 
     return err;
